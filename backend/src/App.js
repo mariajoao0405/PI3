@@ -12,6 +12,7 @@ const managerRoutes = require("./routes/departmentProfileRoutes");
 const proposalRoutes = require("./routes/proposalRoutes");
 const matchRoutes = require("./routes/proposalRoutes");
 const notificationRoutes = require("./routes/notificationRoutes");
+const authRoutes = require("./routes/authRoutes");
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -34,6 +35,7 @@ app.use("/managers", managerRoutes);
 app.use("/proposals", proposalRoutes);
 app.use("/matches", matchRoutes);
 app.use("/notifications", notificationRoutes);
+app.use("/auth", authRoutes);
 
 // Sincronizar base de dados
 sequelize.sync({ force: false })

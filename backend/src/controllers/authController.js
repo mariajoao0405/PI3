@@ -1,5 +1,6 @@
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
+const { Op } = require('sequelize');
 const User = require('../models/User');
 
 exports.login = async (req, res) => {
@@ -12,7 +13,7 @@ exports.login = async (req, res) => {
 
     const user = await User.findOne({
       where: {
-        [User.sequelize.Op.or]: [
+        [Op.or]: [
           { email_institucional: email },
           { email_pessoal: email }
         ]
