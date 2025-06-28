@@ -26,6 +26,11 @@ const ProposalMatch = sequelize.define('proposal_matches', {
     type: DataTypes.BOOLEAN,
     defaultValue: false,
   },
+  status: {
+  type: DataTypes.ENUM('pendente', 'validada', 'rejeitada'),
+  allowNull: false,
+  defaultValue: 'pendente'
+}
 }, {
   tableName: 'proposal_matches',
   timestamps: false,

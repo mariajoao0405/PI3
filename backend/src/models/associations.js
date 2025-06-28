@@ -1,4 +1,4 @@
-const User = require('./user');
+const User = require('./User');
 const StudentProfile = require('./studentProfile');
 const CompanyProfile = require('./CompanyProfile');
 const DepartmentManagerProfile = require('./departmentProfile');
