@@ -1,5 +1,5 @@
 const bcrypt = require('bcrypt');
-const { User } = require('../models');
+const User = require('../models/user');
 
 // Tipos válidos de utilizador
 const TIPOS_VALIDOS = ['administrador', 'gestor', 'estudante', 'empresa'];
@@ -7,12 +7,20 @@ const TIPOS_VALIDOS = ['administrador', 'gestor', 'estudante', 'empresa'];
 // Listar todos os utilizadores (sem password)
 exports.listUsers = async (req, res) => {
   try {
+    if (!User || typeof User.findAll !== 'function') {
+      console.error("ERRO: Modelo User está undefined ou findAll não é uma função.");
+      return res.status(500).json({
+        success: false,
+        message: "Erro interno: modelo User não está corretamente definido."
+      });
+    }
     const users = await User.findAll({
       attributes: { exclude: ['password_hash'] }
     });
+
+
     return res.status(200).json({ success: true, data: users });
   } catch (error) {
-    console.error("Erro ao listar utilizadores:", error);
     return res.status(500).json({
       success: false,
       message: "Erro ao buscar utilizadores"
@@ -69,7 +77,7 @@ exports.createUser = async (req, res) => {
     });
   }
 };
-
+  
 // Criar utilizador com tipo de utilizador (com validação)
 exports.createUserWithRole = async (req, res) => {
   try {
@@ -86,7 +94,7 @@ exports.createUserWithRole = async (req, res) => {
 
     const novoUtilizador = await User.create({
       nome,
-      email,
+      email_institucional: email,
       password_hash: hashedPassword,
       tipo_utilizador
     });
@@ -96,7 +104,7 @@ exports.createUserWithRole = async (req, res) => {
       data: {
         id: novoUtilizador.id,
         nome: novoUtilizador.nome,
-        email: novoUtilizador.email,
+        email_institucional: novoUtilizador.email_institucional,
         tipo_utilizador: novoUtilizador.tipo_utilizador
       }
     });
