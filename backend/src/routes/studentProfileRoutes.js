@@ -5,6 +5,7 @@ const StudentProfileController = require('../controllers/studentProfileControlle
 
 router.get('/students', StudentProfileController.listStudents);
 router.get('/students/:id', StudentProfileController.getStudentById);
+router.get('/user/:user_id', StudentProfileController.getStudentByUserId);
 router.post('/students', StudentProfileController.createStudent);
 router.put('/students/:id', StudentProfileController.updateStudent);
 router.delete('/students/:id', StudentProfileController.deleteStudent);

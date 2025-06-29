@@ -1,8 +1,15 @@
 const StudentProfile = require('../models/studentProfile');
+const User = require('../models/user');
 
 exports.listStudents = async (req, res) => {
   try {
-    const students = await StudentProfile.findAll();
+    const students = await StudentProfile.findAll({
+      include: [{
+        model: User,
+        as: 'user',
+        attributes: ['id', 'nome', 'email_institucional']
+      }]
+    });
     return res.status(200).json({ success: true, data: students });
   } catch (error) {
     return res.status(500).json({ success: false, message: 'Erro ao obter perfis de estudantes.' });
@@ -49,5 +56,14 @@ exports.deleteStudent = async (req, res) => {
     return res.status(200).json({ success: true, message: 'Perfil eliminado com sucesso.' });
   } catch (error) {
     return res.status(500).json({ success: false, error: 'Erro ao eliminar perfil.' });
+  }
+};
+exports.getStudentByUserId = async (req, res) => {
+  try {
+    const student = await StudentProfile.findOne({ where: { user_id: req.params.user_id } });
+    if (student) return res.json({ success: true, data: student });
+    return res.status(404).json({ success: false, error: 'Perfil não encontrado.' });
+  } catch (error) {
+    return res.status(500).json({ success: false, error: 'Erro ao obter perfil.' });
   }
 };

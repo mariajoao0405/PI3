@@ -18,12 +18,24 @@ export const getUserRoleFromToken = () => {
 export const getUserIdFromToken = () => {
     const token = localStorage.getItem('authToken');
     if (!token) {
+        console.log('Token não encontrado no localStorage');
         return null;
     }
 
     try {
         const decodedToken = jwtDecode(token);
-        return decodedToken.id || null;
+        console.log('Token decodificado:', decodedToken);
+        
+        // Tentar diferentes propriedades para o ID
+        const userId = decodedToken.id || 
+                      decodedToken.id_user || 
+                      decodedToken.userId || 
+                      decodedToken.user_id ||
+                      decodedToken.ID ||
+                      null;
+        
+        console.log('ID extraído do token:', userId);
+        return userId;
     } catch (error) {
         console.error('Erro ao decodificar o token JWT:', error);
         return null;

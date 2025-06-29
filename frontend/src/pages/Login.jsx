@@ -41,7 +41,7 @@ const PaginaLogin = () => {
             navigate('/empresa');
             break;
           case 'estudante':
-            navigate('/propostas');
+            navigate('/estudante');
             break;
           default:
             console.log('Role não reconhecido:', userRole);

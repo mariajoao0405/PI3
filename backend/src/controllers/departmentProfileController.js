@@ -1,10 +1,19 @@
 const DepartmentManagerProfile = require('../models/departmentProfile');
+const User = require('../models/user');
 
 exports.listManagers = async (req, res) => {
   try {
-    const managers = await DepartmentManagerProfile.findAll();
+    const managers = await DepartmentManagerProfile.findAll({
+      include: [{
+        model: User,
+        as: 'user',
+        attributes: ['id', 'nome', 'email_institucional']
+      }]
+    });
+
     return res.status(200).json({ success: true, data: managers });
   } catch (error) {
+    console.error('Erro ao obter gestores:', error);
     return res.status(500).json({ success: false, message: 'Erro ao obter gestores.' });
   }
 };
