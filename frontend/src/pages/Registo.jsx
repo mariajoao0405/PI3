@@ -17,7 +17,7 @@ function Registo() {
           nome,
           email_institucional: email,
           password,
-          tipo_utilizador: 'administrador', // valor default
+          tipo_utilizador: 'administrador', 
         }),
       });
 
