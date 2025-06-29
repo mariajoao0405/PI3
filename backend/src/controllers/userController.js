@@ -30,6 +30,39 @@ exports.createUser = async (req, res) => {
   }
 };
 
+exports.createUserWithRole = async (req, res) => {
+  try {
+    const { email, password, tipo_utilizador } = req.body;
+
+    const tiposValidos = ['administrador', 'gestor', 'estudante', 'empresa'];
+
+    if (!tiposValidos.includes(tipo_utilizador)) {
+      return res.status(400).json({
+        success: false,
+        message: "Tipo de utilizador inválido. Deve ser 'administrador', 'gestor', 'estudante' ou 'empresa'."
+      });
+    }
+
+    const novoUtilizador = await User.create({
+      nome,
+      email,
+      password,
+      tipo_utilizador
+    });
+
+    return res.status(201).json({
+      success: true
+    });
+
+  } catch (error) {
+    console.error("Erro ao criar utilizador:", error);
+    return res.status(500).json({
+      success: false,
+      message: "Erro interno ao criar utilizador."
+    });
+  }
+};
+
 exports.updateUser = async (req, res) => {
   const { id } = req.params;
   try {
