@@ -1,17 +1,11 @@
 const { DataTypes } = require('sequelize');
 const sequelize = require('./database');
-const User = require('./user');
 
-const CompanyProfile = sequelize.define('company_profiles', {
+const CompanyProfile = sequelize.define('company', {
     id: {
         type: DataTypes.INTEGER,
         primaryKey: true,
         autoIncrement: true,
-    },
-    user_id: {
-        type: DataTypes.INTEGER,
-        references: { model: User, key: 'id' },
-        onDelete: 'CASCADE',
     },
     nome_empresa: {
         type: DataTypes.STRING,
@@ -29,7 +23,7 @@ const CompanyProfile = sequelize.define('company_profiles', {
         type: DataTypes.STRING,
     },
 }, {
-    tableName: 'company_profiles',
+    tableName: 'company',
     timestamps: false,
 });
 
