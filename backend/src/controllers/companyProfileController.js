@@ -1,8 +1,15 @@
 const CompanyProfile = require('../models/CompanyProfile');
+const User = require('../models/User');
 
 exports.listCompanies = async (req, res) => {
   try {
-    const companies = await CompanyProfile.findAll();
+    const companies = await CompanyProfile.findAll({
+      include: [{
+        model: User,
+        as: 'user',
+        attributes: ['id', 'nome', 'email_institucional']
+      }]
+    });
     return res.status(200).json({ success: true, data: companies });
   } catch (error) {
     return res.status(500).json({ success: false, message: 'Erro ao obter empresas.' });
@@ -50,4 +57,14 @@ exports.deleteCompany = async (req, res) => {
   } catch (error) {
     return res.status(500).json({ success: false, error: 'Erro ao eliminar empresa.' });
   }
+};
+
+exports.getCompanyByUserId = async (req, res) => {
+ try{
+    const companies = await CompanyProfile.findAll({ where: { user_id: req.params.user_id} });
+    if (companies) return res.json({ success: true, data: companies });
+    return res.status(404).json({ success: false, error: 'Empresa não encontrada.' });
+ } catch (error) {
+    return res.status(500).json({ success: false, error: 'Erro ao obter empresas.' });
+ }
 };

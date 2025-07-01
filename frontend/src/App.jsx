@@ -14,6 +14,10 @@ import AdminViewStudent from './pages/AdminViewStudents.jsx'
 import StudantDashboard from './pages/StudantDashboard.jsx'
 import StudantProfile from './pages/StudantProfile.jsx'
 
+//PAGINAS DE EMPRESA
+import EmpresaDashboard from './pages/CompanyDashBoard.jsx'
+import EmpresaProfile from './pages/CompanyProfile.jsx'
+
 function App() {
 
   return (
@@ -34,7 +38,8 @@ function App() {
       <Route path="/perfil-estudante/:user_id" element={<ProtectedRoute element={<StudantProfile/>} allowedRoles={['estudante']} />} />
       
       {/* rotas protegidas = EMPRESA */}
-      {/* <Route path="/empresa" element={<ProtectedRoute element={<EmpresaPage/>} allowedRoles={['empresa']} />} /> */}
+      <Route path="/empresa" element={<ProtectedRoute element={<EmpresaDashboard/>} allowedRoles={['empresa']} />} />
+      <Route path="/perfil-empresa/:user_id" element={<ProtectedRoute element={<EmpresaProfile/>} allowedRoles={['empresa']} />} />
 
       {/* rotas protegidas = GESTOR */}
       {/* <Route path="/gestor" element={<ProtectedRoute element={<GestorPage/>} allowedRoles={['gestor']} />} /> */}

@@ -1,5 +1,5 @@
 const StudentProfile = require('../models/studentProfile');
-const User = require('../models/user');
+const User = require('../models/User');
 
 exports.listStudents = async (req, res) => {
   try {
