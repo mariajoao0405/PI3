@@ -1,6 +1,6 @@
-const User = require('./user');
+const User = require('./User');
 const StudentProfile = require('./studentProfile');
-const CompanyProfile = require('./company');
+const CompanyProfile = require('./CompanyProfile');
 const DepartmentManagerProfile = require('./departmentProfile');
 const Proposal = require('./proposal');
 const ProposalMatch = require('./proposalMatch');
@@ -8,6 +8,9 @@ const Notification = require('./notification');
 
 User.hasOne(StudentProfile, { foreignKey: 'user_id' });
 StudentProfile.belongsTo(User, { foreignKey: 'user_id' });
+
+User.hasOne(CompanyProfile, { foreignKey: 'user_id' });
+CompanyProfile.belongsTo(User, { foreignKey: 'user_id' });
 
 User.hasOne(DepartmentManagerProfile, { foreignKey: 'user_id' });
 DepartmentManagerProfile.belongsTo(User, { foreignKey: 'user_id' });
