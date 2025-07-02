@@ -8,6 +8,8 @@ import ProtectedRoute from './componentes/ProtectedRoute.jsx'
 import AdminPage from './pages/AdminPage.jsx'
 import AdminViewDepartment from './pages/AdminViewDepartment.jsx'
 import AdminViewStudent from './pages/AdminViewStudents.jsx'
+import AdminCreateProposal from './pages/AdminCreateProposal.jsx'
+import AdminViewProposal from './pages/AdminViewProposals.jsx'
 
 
 //PAGINAS DE ESTUDANTE
@@ -32,6 +34,8 @@ function App() {
       <Route path="/admin" element={<ProtectedRoute element={<AdminPage/>} allowedRoles={['administrador']} />} />
       <Route path="/admin/gestores" element={<ProtectedRoute element={<AdminViewDepartment/>} allowedRoles={['administrador']} />} />
       <Route path="/admin/estudantes" element={<ProtectedRoute element={<AdminViewStudent/>} allowedRoles={['administrador']} />} />
+      <Route path="/admin/criar-proposta" element={<ProtectedRoute element={<AdminCreateProposal/>} allowedRoles={['administrador']} />} />
+      <Route path="/admin/ver-propostas" element={<ProtectedRoute element={<AdminViewProposal/>} allowedRoles={['administrador']}/>} />
 
       {/* rotas protegias = Estudante */}
       <Route path="/estudante" element={<ProtectedRoute element={<StudantDashboard/>} allowedRoles={['estudante']} />} />

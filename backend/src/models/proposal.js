@@ -1,7 +1,7 @@
 const { DataTypes } = require('sequelize');
 const sequelize = require('./database');
 const CompanyProfile = require('./CompanyProfile');
-const User = require('./user');
+const User = require('./User');
 
 const Proposal = sequelize.define('proposals', {
   id: {
@@ -15,6 +15,11 @@ const Proposal = sequelize.define('proposals', {
     onDelete: 'CASCADE',
   },
   validada_por_id: {
+    type: DataTypes.INTEGER,
+    references: { model: User, key: 'id' },
+    onDelete: 'SET NULL',
+  },
+  user_id:{
     type: DataTypes.INTEGER,
     references: { model: User, key: 'id' },
     onDelete: 'SET NULL',
