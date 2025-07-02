@@ -8,7 +8,7 @@ exports.listProposals = async (req, res) => {
       include: [
         {
           model: User,
-          as: 'criador', // Use o alias definido nas associações
+          as: 'criador', 
           attributes: ['id', 'nome', 'email_institucional']
         },
         {
@@ -33,8 +33,6 @@ exports.getProposalById = async (req, res) => {
     return res.status(500).json({ success: false, error: 'Erro ao obter proposta.' });
   }
 };
-
-
 
 exports.createProposal = async (req, res) => {
   try {
@@ -111,7 +109,6 @@ exports.createProposal = async (req, res) => {
   }
 };
 
-
 exports.updateProposal = async (req, res) => {
   try {
     const proposal = await Proposal.findByPk(req.params.id);
@@ -124,25 +121,13 @@ exports.updateProposal = async (req, res) => {
   }
 };
 
-exports.deleteProposal = async (req, res) => {
-  try {
-    const proposal = await Proposal.findByPk(req.params.id);
-    if (!proposal) return res.status(404).json({ success: false, error: 'Proposta não encontrada.' });
-
-    await proposal.destroy();
-    return res.status(200).json({ success: true, message: 'Proposta eliminada com sucesso.' });
-  } catch (error) {
-    return res.status(500).json({ success: false, error: 'Erro ao eliminar proposta.' });
-  }
-};
-
 exports.validateProposal = async (req, res) => {
   try {
     const { id } = req.params;
     const proposal = await Proposal.findByPk(id);
     if (!proposal) return res.status(404).json({ success: false, error: 'Proposta não encontrada.' });
 
-    proposal.status = 'validada'; 
+    proposal.estado = 'ativa';
     await proposal.save();
 
     return res.status(200).json({ success: true, message: 'Proposta validada com sucesso.' });
@@ -157,7 +142,7 @@ exports.rejectProposal = async (req, res) => {
     const proposal = await Proposal.findByPk(id);
     if (!proposal) return res.status(404).json({ success: false, error: 'Proposta não encontrada.' });
 
-    proposal.status = 'rejeitada';
+    proposal.estado = 'inativa';
     await proposal.save();
 
     return res.status(200).json({ success: true, message: 'Proposta rejeitada com sucesso.' });
@@ -166,3 +151,38 @@ exports.rejectProposal = async (req, res) => {
   }
 };
 
+exports.removeProposal = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const proposal = await Proposal.findByPk(id);
+    if (!proposal) return res.status(404).json({ success: false, error: 'Proposta não encontrada.' });
+
+    proposal.estado = 'removida';
+    await proposal.save();
+
+    return res.status(200).json({ success: true, message: 'Proposta removida com sucesso.' });
+  } catch (error) {
+    return res.status(500).json({ success: false, error: 'Erro ao remover proposta.' });
+  }
+};
+
+exports.reactivateProposal = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const proposal = await Proposal.findByPk(id);
+    if (!proposal) return res.status(404).json({ success: false, error: 'Proposta não encontrada.' });
+
+    // Apenas propostas removidas podem ser reativadas
+    if (proposal.estado !== 'removida') {
+      return res.status(400).json({ success: false, error: 'Apenas propostas removidas podem ser reativadas.' });
+    }
+
+    proposal.estado = 'pendente';
+    proposal.reativada_em = new Date();
+    await proposal.save();
+
+    return res.status(200).json({ success: true, message: 'Proposta reativada com sucesso.' });
+  } catch (error) {
+    return res.status(500).json({ success: false, error: 'Erro ao reativar proposta.' });
+  }
+};

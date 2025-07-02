@@ -28,8 +28,6 @@ function App() {
       <Route path="/login" element={<Login />} />
       <Route path="/" element={<Login />} />
 
-
-
       {/* rotas protegidas = ADMIN */}
       <Route path="/admin" element={<ProtectedRoute element={<AdminPage/>} allowedRoles={['administrador']} />} />
       <Route path="/admin/gestores" element={<ProtectedRoute element={<AdminViewDepartment/>} allowedRoles={['administrador']} />} />
