@@ -186,3 +186,36 @@ exports.reactivateProposal = async (req, res) => {
     return res.status(500).json({ success: false, error: 'Erro ao reativar proposta.' });
   }
 };
+
+exports.listProposalsByCompany = async (req, res) => {
+  try {
+    const { empresaId } = req.params;
+
+    // Verifica se a empresa existe
+    const empresa = await CompanyProfile.findByPk(empresaId);
+    if (!empresa) {
+      return res.status(404).json({ success: false, error: 'Empresa não encontrada.' });
+    }
+
+    // Busca as propostas associadas à empresa
+    const propostas = await Proposal.findAll({
+      where: { empresa_id: empresaId },
+      include: [
+        {
+          model: User,
+          as: 'criador',
+          attributes: ['id', 'nome', 'email_institucional']
+        },
+        {
+          model: CompanyProfile,
+          attributes: ['id', 'nome_empresa', 'nif', 'website']
+        }
+      ]
+    });
+
+    return res.status(200).json({ success: true, data: propostas });
+  } catch (error) {
+    console.error('Erro ao listar propostas por empresa:', error);
+    return res.status(500).json({ success: false, error: 'Erro ao listar propostas por empresa.' });
+  }
+};
