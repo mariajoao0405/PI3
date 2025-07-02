@@ -1,4 +1,4 @@
-const ProposalMatch = require('../models/ProposalMatch');
+const ProposalMatch = require('../models/proposalMatch');
 
 exports.listMatches = async (req, res) => {
   try {

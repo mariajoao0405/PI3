@@ -12,7 +12,8 @@ router.post('/proposals', authenticateToken, ProposalController.createProposal);
 router.put('/proposals/:id', authenticateToken, ProposalController.updateProposal);
 router.put('/:id/validate', authenticateToken, ProposalController.validateProposal);
 router.put('/:id/reject', authenticateToken, ProposalController.rejectProposal);
-router.put('/:id/remove', authenticateToken, ProposalController.removeProposal);
+router.delete('/:id/remove', authenticateToken, ProposalController.removeProposal);
+router.put('/:id/inactivate', authenticateToken, ProposalController.inactivateProposal);
 router.put('/:id/reactivate', authenticateToken, ProposalController.reactivateProposal);
 router.get('/empresa/:empresaId',authenticateToken, ProposalController.listProposalsByCompany);
 

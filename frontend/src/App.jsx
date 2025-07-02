@@ -19,6 +19,7 @@ import StudantProfile from './pages/StudantProfile.jsx'
 //PAGINAS DE EMPRESA
 import EmpresaDashboard from './pages/CompanyDashBoard.jsx'
 import EmpresaProfile from './pages/CompanyProfile.jsx'
+import EmpresaCreateProposal from './pages/CompanyCreateProposal.jsx'
 
 function App() {
 
@@ -42,6 +43,7 @@ function App() {
       {/* rotas protegidas = EMPRESA */}
       <Route path="/empresa" element={<ProtectedRoute element={<EmpresaDashboard/>} allowedRoles={['empresa']} />} />
       <Route path="/perfil-empresa/:user_id" element={<ProtectedRoute element={<EmpresaProfile/>} allowedRoles={['empresa']} />} />
+      <Route path="/empresa/criar-proposta" element={<ProtectedRoute element={<EmpresaCreateProposal/>} allowedRoles={['empresa']} />} />
 
       {/* rotas protegidas = GESTOR */}
       {/* <Route path="/gestor" element={<ProtectedRoute element={<GestorPage/>} allowedRoles={['gestor']} />} /> */}

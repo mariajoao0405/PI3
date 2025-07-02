@@ -136,6 +136,7 @@ exports.validateProposal = async (req, res) => {
   }
 };
 
+
 exports.rejectProposal = async (req, res) => {
   try {
     const { id } = req.params;
@@ -151,18 +152,43 @@ exports.rejectProposal = async (req, res) => {
   }
 };
 
-exports.removeProposal = async (req, res) => {
+exports.inactivateProposal = async (req, res) => {
   try {
     const { id } = req.params;
     const proposal = await Proposal.findByPk(id);
-    if (!proposal) return res.status(404).json({ success: false, error: 'Proposta não encontrada.' });
+    if (!proposal) {
+      return res.status(404).json({ success: false, error: 'Proposta não encontrada.' });
+    }
 
-    proposal.estado = 'removida';
+    // Só propostas ativas podem ser desativadas
+    if (proposal.estado !== 'ativa') {
+      return res.status(400).json({ success: false, error: 'Apenas propostas ativas podem ser desativadas.' });
+    }
+
+    proposal.estado = 'inativa';
     await proposal.save();
 
-    return res.status(200).json({ success: true, message: 'Proposta removida com sucesso.' });
+    return res.status(200).json({ success: true, message: 'Proposta desativada com sucesso.' });
   } catch (error) {
-    return res.status(500).json({ success: false, error: 'Erro ao remover proposta.' });
+    console.error('Erro ao desativar proposta:', error);
+    return res.status(500).json({ success: false, error: 'Erro ao desativar proposta.' });
+  }
+};
+
+exports.removeProposal = async (req, res) => {
+   try {
+    const { id } = req.params;
+    const proposal = await Proposal.findByPk(id);
+
+    if (!proposal) {
+      return res.status(404).json({ success: false, error: 'Proposta não encontrada.' });
+    }
+
+    await proposal.destroy();
+    return res.status(200).json({ success: true, message: 'Proposta apagada permanentemente.' });
+  } catch (error) {
+    console.error('Erro ao apagar proposta:', error);
+    return res.status(500).json({ success: false, error: 'Erro ao apagar proposta.' });
   }
 };
 
@@ -172,12 +198,12 @@ exports.reactivateProposal = async (req, res) => {
     const proposal = await Proposal.findByPk(id);
     if (!proposal) return res.status(404).json({ success: false, error: 'Proposta não encontrada.' });
 
-    // Apenas propostas removidas podem ser reativadas
-    if (proposal.estado !== 'removida') {
-      return res.status(400).json({ success: false, error: 'Apenas propostas removidas podem ser reativadas.' });
+    // Apenas propostas inativas podem ser reativadas
+    if (proposal.estado !== 'inativa') {
+      return res.status(400).json({ success: false, error: 'Apenas propostas inativas podem ser reativadas.' });
     }
 
-    proposal.estado = 'pendente';
+    proposal.estado = 'ativa';
     proposal.reativada_em = new Date();
     await proposal.save();
 
@@ -186,6 +212,9 @@ exports.reactivateProposal = async (req, res) => {
     return res.status(500).json({ success: false, error: 'Erro ao reativar proposta.' });
   }
 };
+
+
+
 
 exports.listProposalsByCompany = async (req, res) => {
   try {
@@ -208,6 +237,7 @@ exports.listProposalsByCompany = async (req, res) => {
         },
         {
           model: CompanyProfile,
+          as: 'company_profile',
           attributes: ['id', 'nome_empresa', 'nif', 'website']
         }
       ]
