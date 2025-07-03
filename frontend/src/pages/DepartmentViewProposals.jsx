@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { getUserIdFromToken, getUserRoleFromToken } from '../componentes/jwtdecode';
 
-const AdminViewProposals = () => {
+const DepartmentViewProposals = () => {
     const navigate = useNavigate();
     const [propostas, setPropostas] = useState([]);
     const [empresas, setEmpresas] = useState([]);
@@ -14,9 +14,9 @@ const AdminViewProposals = () => {
     const [assignments, setAssignments] = useState({});
 
     useEffect(() => {
-        // Verificar se é admin
+        // Verificar se é gestor de departamento
         const role = getUserRoleFromToken();
-        if (role !== 'administrador') {
+        if (role !== 'gestor') {
             navigate('/login');
             return;
         }
@@ -147,7 +147,7 @@ const AdminViewProposals = () => {
         }
     };
 
-    // ADICIONAR FUNÇÃO PARA INATIVAR PROPOSTA
+    // FUNÇÃO PARA INATIVAR PROPOSTA
     const handleInactivateProposal = async (proposalId) => {
         if (!window.confirm('Tem certeza que deseja inativar esta proposta?')) return;
 
@@ -166,7 +166,7 @@ const AdminViewProposals = () => {
         }
     };
 
-    // ADICIONAR FUNÇÃO PARA REATIVAR PROPOSTA
+    // FUNÇÃO PARA REATIVAR PROPOSTA
     const handleReactivateProposal = async (proposalId) => {
         if (!window.confirm('Tem certeza que deseja reativar esta proposta?')) return;
 
@@ -185,6 +185,7 @@ const AdminViewProposals = () => {
         }
     };
 
+    // FUNÇÃO PARA REMOVER PROPOSTA
     const handleRemoveProposal = async (proposalId) => {
         if (!window.confirm('Tem certeza que deseja remover esta proposta? Esta ação não pode ser desfeita.')) return;
 
@@ -199,6 +200,11 @@ const AdminViewProposals = () => {
             console.error('Erro ao remover proposta:', err);
             alert('Erro ao remover proposta');
         }
+    };
+
+    // FUNÇÃO PARA EDITAR PROPOSTA
+    const handleEditProposal = (proposalId) => {
+        navigate(`/gestor/editar-proposta/${proposalId}`);
     };
 
     const handleFilterByEmpresa = (empresaId) => {
@@ -223,15 +229,21 @@ const AdminViewProposals = () => {
         <div className="container mt-4">
             <div className="d-flex justify-content-between align-items-center mb-4">
                 <div>
-                    <h2>Gestão de Propostas</h2>
+                    <h2>Gestão de Propostas - Departamento</h2>
                     <p className="text-muted mb-0">
                         {propostas.length} proposta(s) encontrada(s)
                     </p>
                 </div>
                 <div>
                     <button
+                        className="btn btn-primary me-2"
+                        onClick={() => navigate('/gestor/criar-proposta')}
+                    >
+                        Nova Proposta
+                    </button>
+                    <button
                         className="btn btn-outline-secondary me-2"
-                        onClick={() => navigate('/admin')}
+                        onClick={() => navigate('/gestor')}
                     >
                         Dashboard
                     </button>
@@ -375,15 +387,14 @@ const AdminViewProposals = () => {
                                                             }`}>
                                                                 {assignment.estado}
                                                             </span>
-                                                           
                                                         </div>
                                                     </div>
                                                 ))}
                                             </div>
                                         )}
 
-                                        {/* BOTÕES DE AÇÃO CORRIGIDOS */}
-                                        <div className="d-flex gap-2 mt-3">
+                                        {/* BOTÕES DE AÇÃO COMPLETOS PARA GESTORES */}
+                                        <div className="d-flex gap-2 mt-3 flex-wrap">
                                             {/* Botões para propostas pendentes */}
                                             {proposta.estado === 'pendente' && (
                                                 <>
@@ -422,7 +433,15 @@ const AdminViewProposals = () => {
                                                 </button>
                                             )}
 
-                                            {/* Botão remover (sempre disponível) */}
+                                            {/* Botão editar (sempre disponível para gestores) */}
+                                            <button
+                                                className="btn btn-outline-primary btn-sm"
+                                                onClick={() => handleEditProposal(proposta.id)}
+                                            >
+                                                <i className="bi bi-pencil"></i> Editar
+                                            </button>
+
+                                            {/* Botão remover (sempre disponível para gestores) */}
                                             <button
                                                 className="btn btn-outline-danger btn-sm"
                                                 onClick={() => handleRemoveProposal(proposta.id)}
@@ -440,4 +459,4 @@ const AdminViewProposals = () => {
     );
 };
 
-export default AdminViewProposals;
+export default DepartmentViewProposals;

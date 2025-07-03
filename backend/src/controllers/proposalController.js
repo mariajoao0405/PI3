@@ -1,6 +1,9 @@
 const Proposal = require('../models/proposal');
 const User = require('../models/User');
 const CompanyProfile = require('../models/CompanyProfile');
+const StudentProfile = require('../models/studentProfile');
+const ProposalMatch = require('../models/proposalMatch'); // ESTA LINHA
+const DepartmentProfile = require('../models/departmentProfile');
 
 exports.listProposals = async (req, res) => {
   try {
@@ -14,6 +17,11 @@ exports.listProposals = async (req, res) => {
         {
           model: CompanyProfile,
           attributes: ['id', 'nome_empresa', 'nif', 'website']
+        },
+        {
+          model: DepartmentProfile,
+          as: 'departamento', // Certifique-se de que o alias está correto
+          attributes: ['id', 'departamento']
         }
       ]
     });
@@ -61,7 +69,7 @@ exports.createProposal = async (req, res) => {
     console.log('✅ [DEBUG] Tipo de utilizador:', userType);
 
     // Determinar o estado baseado no tipo de utilizador
-    const estado = userType === 'administrador' ? 'ativa' : 'pendente';
+    const estado = userType === 'administrador' || userType === 'gestor' ? 'ativa' : 'pendente';
     
     console.log('✅ [DEBUG] Estado da proposta:', estado);
 
@@ -114,12 +122,17 @@ exports.updateProposal = async (req, res) => {
     const proposal = await Proposal.findByPk(req.params.id);
     if (!proposal) return res.status(404).json({ success: false, error: 'Proposta não encontrada.' });
 
+    if (proposal.estado === 'removida') {
+      return res.status(400).json({ success: false, error: 'Propostas removidas não podem ser editadas.' });
+    }
+
     await proposal.update(req.body);
     return res.status(200).json({ success: true, message: 'Proposta atualizada com sucesso.' });
   } catch (error) {
     return res.status(500).json({ success: false, error: 'Erro ao atualizar proposta.' });
   }
 };
+
 
 exports.validateProposal = async (req, res) => {
   try {
@@ -249,3 +262,120 @@ exports.listProposalsByCompany = async (req, res) => {
     return res.status(500).json({ success: false, error: 'Erro ao listar propostas por empresa.' });
   }
 };
+
+
+exports.assignProposalToStudent = async (req, res) => {
+  try {
+    const { proposal_id, student_id } = req.body;
+    const userId = req.user.id;
+
+    // Verificar se a proposta existe
+    const proposal = await Proposal.findByPk(proposal_id);
+    if (!proposal) {
+      return res.status(404).json({ 
+        success: false, 
+        error: 'Proposta não encontrada.' 
+      });
+    }
+
+    // Verificar se o estudante existe
+    const student = await StudentProfile.findByPk(student_id);
+    if (!student) {
+      return res.status(404).json({ 
+        success: false, 
+        error: 'Estudante não encontrado.' 
+      });
+    }
+
+    // Buscar perfil da empresa
+    const companyProfile = await CompanyProfile.findOne({ 
+      where: { user_id: userId } 
+    });
+    if (!companyProfile) {
+      return res.status(404).json({ 
+        success: false, 
+        error: 'Perfil da empresa não encontrado.' 
+      });
+    }
+
+    // Verificar se a proposta pertence à empresa
+    if (proposal.empresa_id !== companyProfile.id) {
+      return res.status(403).json({ 
+        success: false, 
+        error: 'Você não tem permissão para atribuir esta proposta.' 
+      });
+    }
+
+    // Verificar se já existe atribuição
+    const existingMatch = await ProposalMatch.findOne({
+      where: {
+        proposal_id,
+        student_id
+      }
+    });
+
+    if (existingMatch) {
+      return res.status(400).json({ 
+        success: false, 
+        error: 'Esta proposta já foi atribuída a este estudante.' 
+      });
+    }
+
+    // Criar a atribuição
+    const match = await ProposalMatch.create({
+      proposal_id,
+      student_id,
+      empresa_id: companyProfile.id,
+      estado: 'pendente',
+      data_atribuicao: new Date()
+    });
+
+    return res.status(201).json({ 
+      success: true, 
+      message: 'Proposta atribuída com sucesso!',
+      data: match 
+    });
+
+  } catch (error) {
+    console.error('Erro ao atribuir proposta:', error);
+    return res.status(500).json({ 
+      success: false, 
+      error: 'Erro ao atribuir proposta.' 
+    });
+  }
+};
+
+exports.getProposalWithAssignments = async (req, res) => {
+  try {
+    const { proposal_id } = req.params;
+    
+    const assignments = await ProposalMatch.findAll({
+      where: { proposal_id },
+      include: [
+        {
+          model: StudentProfile,
+          include: [
+            {
+              model: User,
+              attributes: ['id', 'nome', 'email_institucional']
+            }
+          ]
+        }
+      ],
+    });
+
+    return res.status(200).json({ 
+      success: true, 
+      data: assignments 
+    });
+
+  } catch (error) {
+    console.error('Erro ao buscar atribuições:', error);
+    return res.status(500).json({ 
+      success: false, 
+      error: 'Erro ao buscar atribuições.' 
+    });
+  }
+};
+
+

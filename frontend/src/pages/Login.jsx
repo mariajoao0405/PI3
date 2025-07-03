@@ -34,8 +34,8 @@ const PaginaLogin = () => {
           case 'administrador':
             navigate('/admin');
             break;
-          case 'departamento':
-            navigate('/departamento');
+          case 'gestor':
+            navigate('/gestor');
             break;
           case 'empresa':
             navigate('/empresa');

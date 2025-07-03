@@ -16,6 +16,8 @@ router.delete('/:id/remove', authenticateToken, ProposalController.removeProposa
 router.put('/:id/inactivate', authenticateToken, ProposalController.inactivateProposal);
 router.put('/:id/reactivate', authenticateToken, ProposalController.reactivateProposal);
 router.get('/empresa/:empresaId',authenticateToken, ProposalController.listProposalsByCompany);
+router.post('/assign-to-student', authenticateToken, ProposalController.assignProposalToStudent);
+router.get('/proposals/:proposal_id/assignments', authenticateToken, ProposalController.getProposalWithAssignments);
 
 // MATCHES
 router.get('/matches', ProposalMatchController.listMatches);

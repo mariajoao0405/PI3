@@ -31,6 +31,9 @@ Notification.belongsTo(User, { foreignKey: 'user_id' });
 CompanyProfile.hasMany(Proposal, { foreignKey: 'empresa_id' });
 Proposal.belongsTo(CompanyProfile, { foreignKey: 'empresa_id' });
 
+DepartmentManagerProfile.hasMany(Proposal, { foreignKey: 'id', as: 'propostas_departamento' });
+Proposal.belongsTo(DepartmentManagerProfile, { foreignKey: 'id', as: 'departamento' });
+
 // Proposal matches
 Proposal.hasMany(ProposalMatch, { foreignKey: 'proposal_id' });
 ProposalMatch.belongsTo(Proposal, { foreignKey: 'proposal_id' });

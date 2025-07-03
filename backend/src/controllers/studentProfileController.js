@@ -1,5 +1,8 @@
 const StudentProfile = require('../models/studentProfile');
 const User = require('../models/User');
+const ProposalMatch = require('../models/proposalMatch');
+const Proposal = require('../models/proposal');
+const CompanyProfile = require('../models/CompanyProfile');
 
 exports.listStudents = async (req, res) => {
   try {
@@ -65,5 +68,52 @@ exports.getStudentByUserId = async (req, res) => {
     return res.status(404).json({ success: false, error: 'Perfil não encontrado.' });
   } catch (error) {
     return res.status(500).json({ success: false, error: 'Erro ao obter perfil.' });
+  }
+};
+
+
+exports.getStudentProposals = async (req, res) => {
+  try {
+    const userId = req.user.id;
+
+    // Buscar perfil do estudante
+    const studentProfile = await StudentProfile.findOne({ 
+      where: { user_id: userId } 
+    });
+    
+    if (!studentProfile) {
+      return res.status(404).json({ 
+        success: false, 
+        error: 'Perfil do estudante não encontrado.' 
+      });
+    }
+
+    // Buscar propostas atribuídas ao estudante
+    const proposalMatches = await ProposalMatch.findAll({
+      where: { student_id: studentProfile.id },
+      include: [
+        {
+          model: Proposal,
+          include: [
+            {
+              model: CompanyProfile,
+              attributes: ['id', 'nome_empresa', 'website', 'telefone_contacto']
+            }
+          ]
+        }
+      ],
+    });
+
+    return res.status(200).json({ 
+      success: true, 
+      data: proposalMatches 
+    });
+
+  } catch (error) {
+    console.error('Erro ao buscar propostas do estudante:', error);
+    return res.status(500).json({ 
+      success: false, 
+      error: 'Erro ao buscar propostas.' 
+    });
   }
 };
