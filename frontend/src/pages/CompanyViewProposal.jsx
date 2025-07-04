@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { getUserIdFromToken, getUserRoleFromToken } from '../componentes/jwtdecode';
+import Sidebar from '../componentes/Sidebar'
 
 const CompanyViewProposal = () => {
     const navigate = useNavigate();
@@ -88,10 +89,6 @@ const CompanyViewProposal = () => {
         fetchData();
     }, [navigate]);
 
-    const handleLogout = () => {
-        localStorage.removeItem('authToken');
-        navigate('/login');
-    };
 
     const getStatusBadge = (estado) => {
         switch (estado) {
@@ -210,217 +207,203 @@ const CompanyViewProposal = () => {
     }
 
     return (
-        <div className="container mt-4">
-            <div className="d-flex justify-content-between align-items-center mb-4">
-                <div>
-                    <h2>Minhas Propostas</h2>
-                    {companyProfile && (
-                        <p className="text-muted mb-0">
-                            <strong>{companyProfile.nome_empresa}</strong> - {propostas.length} proposta(s)
-                        </p>
-                    )}
+        <div className="d-flex">
+         <Sidebar />
+            <div className="container mt-4">
+                <div className="d-flex justify-content-between align-items-center mb-4">
+                    <div>
+                        <h2>Minhas Propostas</h2>
+                        {companyProfile && (
+                            <p className="text-muted mb-0">
+                                <strong>{companyProfile.nome_empresa}</strong> - {propostas.length} proposta(s)
+                            </p>
+                        )}
+                    </div>
                 </div>
-                <div>
-                    <button
-                        className="btn btn-primary me-2"
-                        onClick={() => navigate('/empresa/criar-proposta')}
-                    >
-                        Nova Proposta
-                    </button>
-                    <button
-                        className="btn btn-outline-secondary me-2"
-                        onClick={() => navigate('/empresa')}
-                    >
-                        Dashboard
-                    </button>
-                    <button className="btn btn-warning" onClick={handleLogout}>
-                        Logout
-                    </button>
-                </div>
-            </div>
 
-            {error && (
-                <div className="alert alert-danger" role="alert">
-                    {error}
-                </div>
-            )}
+                {error && (
+                    <div className="alert alert-danger" role="alert">
+                        {error}
+                    </div>
+                )}
 
-            {!companyProfile ? (
-                <div className="alert alert-warning" role="alert">
-                    <h5>Perfil da Empresa Não Encontrado</h5>
-                    <p>Você precisa completar o perfil da sua empresa antes de criar propostas.</p>
-                    <button
-                        className="btn btn-primary"
-                        onClick={() => navigate(`/perfil-empresa/${userId}`)}
-                    >
-                        Completar Perfil
-                    </button>
-                </div>
-            ) : propostas.length === 0 ? (
-                <div className="alert alert-info" role="alert">
-                    <h5>Nenhuma Proposta Encontrada</h5>
-                    <p>Você ainda não criou nenhuma proposta de emprego ou estágio.</p>
-                    <button
-                        className="btn btn-primary"
-                        onClick={() => navigate('/empresa/criar-proposta')}
-                    >
-                        Criar Primeira Proposta
-                    </button>
-                </div>
-            ) : (
-                <div className="row">
-                    {propostas.map((proposta) => (
-                        <div key={proposta.id} className="col-12 mb-4">
-                            <div className="card shadow-sm">
-                                <div className="card-header d-flex justify-content-between align-items-center">
-                                    <h5 className="mb-0">{proposta.titulo}</h5>
-                                    <div className="d-flex align-items-center gap-2">
-                                        {getStatusBadge(proposta.estado)}
-                                        <span className="badge bg-info text-dark">
-                                            {proposta.tipo_proposta}
-                                        </span>
+                {!companyProfile ? (
+                    <div className="alert alert-warning" role="alert">
+                        <h5>Perfil da Empresa Não Encontrado</h5>
+                        <p>Você precisa completar o perfil da sua empresa antes de criar propostas.</p>
+                        <button
+                            className="btn btn-primary"
+                            onClick={() => navigate(`/perfil-empresa/${userId}`)}
+                        >
+                            Completar Perfil
+                        </button>
+                    </div>
+                ) : propostas.length === 0 ? (
+                    <div className="alert alert-info" role="alert">
+                        <h5>Nenhuma Proposta Encontrada</h5>
+                        <p>Você ainda não criou nenhuma proposta de emprego ou estágio.</p>
+                        <button
+                            className="btn btn-primary"
+                            onClick={() => navigate('/empresa/criar-proposta')}
+                        >
+                            Criar Primeira Proposta
+                        </button>
+                    </div>
+                ) : (
+                    <div className="row">
+                        {propostas.map((proposta) => (
+                            <div key={proposta.id} className="col-12 mb-4">
+                                <div className="card shadow-sm">
+                                    <div className="card-header d-flex justify-content-between align-items-center">
+                                        <h5 className="mb-0">{proposta.titulo}</h5>
+                                        <div className="d-flex align-items-center gap-2">
+                                            {getStatusBadge(proposta.estado)}
+                                            <span className="badge bg-info text-dark">
+                                                {proposta.tipo_proposta}
+                                            </span>
+                                        </div>
+                                    </div>
+                                    <div className="card-body">
+                                        <div className="row">
+                                            <div className="col-md-6">
+                                                <h6 className="text-muted">Informações da Vaga</h6>
+                                                <p><strong>Local:</strong> {proposta.local_trabalho || 'N/A'}</p>
+                                                <p><strong>Tipo de Contrato:</strong> {proposta.tipo_contrato || 'N/A'}</p>
+                                                <p><strong>Prazo Candidatura:</strong> {formatDate(proposta.prazo_candidatura)}</p>
+                                            </div>
+                                            <div className="col-md-6">
+                                                <h6 className="text-muted">Datas</h6>
+                                                <p><strong>Criada em:</strong> {formatDate(proposta.data_submissao)}</p>
+                                                <p><strong>Contacto:</strong> {proposta.contacto_nome} ({proposta.contacto_email})</p>
+                                            </div>
+                                        </div>
+
+                                        <div className="mt-3">
+                                            <h6 className="text-muted">Descrição</h6>
+                                            <p className="mb-2">{proposta.descricao || 'Sem descrição'}</p>
+                                        </div>
+
+                                        {/* Seção de Estudantes Atribuídos */}
+                                        {assignments[proposta.id] && assignments[proposta.id].length > 0 && (
+                                            <div className="alert alert-info mt-3">
+                                                <h6 className="mb-2">
+                                                    <i className="bi bi-person-check"></i> Estudantes Atribuídos:
+                                                </h6>
+                                                {assignments[proposta.id].map((assignment, index) => (
+                                                    <div key={index} className="d-flex justify-content-between align-items-center mb-1">
+                                                        <span>
+                                                            <strong>{assignment.student_profile?.user?.nome}</strong>
+                                                            {assignment.student_profile?.curso && ` - ${assignment.student_profile.curso}`}
+                                                        </span>
+                                                        <span className={`badge ${
+                                                            assignment.estado === 'pendente' ? 'bg-warning text-dark' :
+                                                            assignment.estado === 'aceite' ? 'bg-success' :
+                                                            'bg-danger'
+                                                        }`}>
+                                                            {assignment.estado}
+                                                        </span>
+                                                    </div>
+                                                ))}
+                                            </div>
+                                        )}
+
+                                        <div className="d-flex gap-2 mt-3">
+                                            <button
+                                                className="btn btn-outline-primary btn-sm"
+                                                onClick={() => handleEditProposal(proposta.id)}
+                                            >
+                                                Editar
+                                            </button>
+
+                                            {proposta.estado === 'ativa' && (
+                                                <>
+                                                    <button
+                                                        className="btn btn-success btn-sm"
+                                                        onClick={() => handleOpenAssignModal(proposta)}
+                                                    >
+                                                        Atribuir a Estudante
+                                                    </button>
+                                                </>
+                                            )}
+                                            
+
+                                            {proposta.estado === 'pendente' && (
+                                                <span className="badge bg-warning text-dark ms-2">
+                                                    Aguardando validação
+                                                </span>
+                                            )}
+
+                                            {proposta.estado === 'rejeitada' && (
+                                                <span className="badge bg-danger ms-2">
+                                                    Rejeitada pelo admin
+                                                </span>
+                                            )}
+                                        </div>
                                     </div>
                                 </div>
-                                <div className="card-body">
-                                    <div className="row">
-                                        <div className="col-md-6">
-                                            <h6 className="text-muted">Informações da Vaga</h6>
-                                            <p><strong>Local:</strong> {proposta.local_trabalho || 'N/A'}</p>
-                                            <p><strong>Tipo de Contrato:</strong> {proposta.tipo_contrato || 'N/A'}</p>
-                                            <p><strong>Prazo Candidatura:</strong> {formatDate(proposta.prazo_candidatura)}</p>
-                                        </div>
-                                        <div className="col-md-6">
-                                            <h6 className="text-muted">Datas</h6>
-                                            <p><strong>Criada em:</strong> {formatDate(proposta.data_submissao)}</p>
-                                            <p><strong>Contacto:</strong> {proposta.contacto_nome} ({proposta.contacto_email})</p>
-                                        </div>
-                                    </div>
+                            </div>
+                        ))}
+                    </div>
+                )}
 
-                                    <div className="mt-3">
-                                        <h6 className="text-muted">Descrição</h6>
-                                        <p className="mb-2">{proposta.descricao || 'Sem descrição'}</p>
-                                    </div>
-
-                                    {/* Seção de Estudantes Atribuídos */}
-                                    {assignments[proposta.id] && assignments[proposta.id].length > 0 && (
-                                        <div className="alert alert-info mt-3">
-                                            <h6 className="mb-2">
-                                                <i className="bi bi-person-check"></i> Estudantes Atribuídos:
-                                            </h6>
-                                            {assignments[proposta.id].map((assignment, index) => (
-                                                <div key={index} className="d-flex justify-content-between align-items-center mb-1">
-                                                    <span>
-                                                        <strong>{assignment.student_profile?.user?.nome}</strong>
-                                                        {assignment.student_profile?.curso && ` - ${assignment.student_profile.curso}`}
-                                                    </span>
-                                                    <span className={`badge ${
-                                                        assignment.estado === 'pendente' ? 'bg-warning text-dark' :
-                                                        assignment.estado === 'aceite' ? 'bg-success' :
-                                                        'bg-danger'
-                                                    }`}>
-                                                        {assignment.estado}
-                                                    </span>
-                                                </div>
-                                            ))}
+                {/* Modal de Atribuição */}
+                {showAssignModal && (
+                    <div className="modal show d-block" tabIndex="-1" style={{ backgroundColor: 'rgba(0,0,0,0.5)' }}>
+                        <div className="modal-dialog">
+                            <div className="modal-content">
+                                <div className="modal-header">
+                                    <h5 className="modal-title">Atribuir Proposta a Estudante</h5>
+                                    <button
+                                        type="button"
+                                        className="btn-close"
+                                        onClick={handleCloseAssignModal}
+                                    ></button>
+                                </div>
+                                <div className="modal-body">
+                                    {selectedProposal && (
+                                        <div className="mb-3">
+                                            <h6>Proposta:</h6>
+                                            <p><strong>{selectedProposal.titulo}</strong></p>
                                         </div>
                                     )}
 
-                                    <div className="d-flex gap-2 mt-3">
-                                        <button
-                                            className="btn btn-outline-primary btn-sm"
-                                            onClick={() => handleEditProposal(proposta.id)}
-                                        >
-                                            Editar
-                                        </button>
-
-                                        {proposta.estado === 'ativa' && (
-                                            <>
-                                                <button
-                                                    className="btn btn-success btn-sm"
-                                                    onClick={() => handleOpenAssignModal(proposta)}
-                                                >
-                                                    Atribuir a Estudante
-                                                </button>
-                                            </>
-                                        )}
-                                        
-
-                                        {proposta.estado === 'pendente' && (
-                                            <span className="badge bg-warning text-dark ms-2">
-                                                Aguardando validação
-                                            </span>
-                                        )}
-
-                                        {proposta.estado === 'rejeitada' && (
-                                            <span className="badge bg-danger ms-2">
-                                                Rejeitada pelo admin
-                                            </span>
-                                        )}
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    ))}
-                </div>
-            )}
-
-            {/* Modal de Atribuição */}
-            {showAssignModal && (
-                <div className="modal show d-block" tabIndex="-1" style={{ backgroundColor: 'rgba(0,0,0,0.5)' }}>
-                    <div className="modal-dialog">
-                        <div className="modal-content">
-                            <div className="modal-header">
-                                <h5 className="modal-title">Atribuir Proposta a Estudante</h5>
-                                <button
-                                    type="button"
-                                    className="btn-close"
-                                    onClick={handleCloseAssignModal}
-                                ></button>
-                            </div>
-                            <div className="modal-body">
-                                {selectedProposal && (
                                     <div className="mb-3">
-                                        <h6>Proposta:</h6>
-                                        <p><strong>{selectedProposal.titulo}</strong></p>
+                                        <label className="form-label">Selecionar Estudante:</label>
+                                        <select
+                                            className="form-select"
+                                            value={selectedStudent}
+                                            onChange={(e) => setSelectedStudent(e.target.value)}
+                                        >
+                                            <option value="">Escolha um estudante...</option>
+                                            {students.map(student => (
+                                                <option key={student.id} value={student.id}>
+                                                    {student.user?.nome} - {student.curso}
+                                                </option>
+                                            ))}
+                                        </select>
                                     </div>
-                                )}
-
-                                <div className="mb-3">
-                                    <label className="form-label">Selecionar Estudante:</label>
-                                    <select
-                                        className="form-select"
-                                        value={selectedStudent}
-                                        onChange={(e) => setSelectedStudent(e.target.value)}
-                                    >
-                                        <option value="">Escolha um estudante...</option>
-                                        {students.map(student => (
-                                            <option key={student.id} value={student.id}>
-                                                {student.user?.nome} - {student.curso}
-                                            </option>
-                                        ))}
-                                    </select>
                                 </div>
-                            </div>
-                            <div className="modal-footer">
-                                <button
-                                    type="button"
-                                    className="btn btn-secondary"
-                                    onClick={handleCloseAssignModal}
-                                >
-                                    Cancelar
-                                </button>
-                                <button
-                                    type="button"
-                                    className="btn btn-primary"
-                                    onClick={handleAssignProposal}
-                                >
-                                    Atribuir
-                                </button>
+                                <div className="modal-footer">
+                                    <button
+                                        type="button"
+                                        className="btn btn-secondary"
+                                        onClick={handleCloseAssignModal}
+                                    >
+                                        Cancelar
+                                    </button>
+                                    <button
+                                        type="button"
+                                        className="btn btn-primary"
+                                        onClick={handleAssignProposal}
+                                    >
+                                        Atribuir
+                                    </button>
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
-            )}
+                )}
+            </div>
         </div>
     );
 };

@@ -2,6 +2,7 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { getUserIdFromToken } from '../componentes/jwtdecode';
+import Sidebar from '../componentes/Sidebar'
 
 const PaginaEstudante = () => {
   const navigate = useNavigate();
@@ -42,26 +43,18 @@ const PaginaEstudante = () => {
   }
 
   return (
-    <div className="container mt-5">
-      <h2>Bem-vindo, Estudante!</h2>
-      <p>Seu ID: {userId}</p>
-      <button 
-        className="btn btn-primary mt-3" 
-        onClick={irParaPerfil}
-        disabled={!userId}
-      >
-        Ir para o meu perfil
-      </button>
-      
-      <button 
-        className="btn btn-secondary mt-3 ms-2" 
-        onClick={() => {
-          localStorage.removeItem('authToken');
-          navigate('/login');
-        }}
-      >
-        Logout
-      </button>
+    <div className="d-flex">
+     <Sidebar />
+      <div className="container mt-5">
+        <h2>Bem-vindo, Estudante!</h2>
+        <button 
+          className="btn btn-primary mt-3" 
+          onClick={irParaPerfil}
+          disabled={!userId}
+        >
+          Ir para o meu perfil
+        </button>
+      </div>
     </div>
   );
 };

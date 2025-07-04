@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { getUserIdFromToken, getUserRoleFromToken } from '../componentes/jwtdecode';
+import Sidebar from '../componentes/Sidebar'
 
 const GestorDashboard = () => {
     const navigate = useNavigate();
@@ -137,11 +138,6 @@ const GestorDashboard = () => {
         setEstudantesFiltered(filtered);
     }, [studentFilter, courseFilter, estudantes]);
 
-    const handleLogout = () => {
-        localStorage.removeItem('authToken');
-        navigate('/login');
-    };
-
     const getStatusBadge = (estado) => {
         switch (estado) {
             case 'pendente':
@@ -186,353 +182,126 @@ const GestorDashboard = () => {
     }
 
     return (
-        <div className="container mt-4">
-            {/* Header */}
-            <div className="d-flex justify-content-between align-items-center mb-4">
-                <div>
-                    <h2>Dashboard do Gestor</h2>
-                    {departmentProfile && (
-                        <p className="text-muted mb-0">
-                            <strong>Departamento:</strong> {departmentProfile.departamento}
-                        </p>
-                    )}
+        <div className="d-flex">
+         <Sidebar />
+            <div className="container mt-4">
+                {/* Header */}
+                <div className="d-flex justify-content-between align-items-center mb-4">
+                    <div>
+                        <h2>Dashboard do Gestor</h2>
+                        {departmentProfile && (
+                            <p className="text-muted mb-0">
+                                <strong>Departamento:</strong> {departmentProfile.departamento}
+                            </p>
+                        )}
+                    </div>
                 </div>
-                <div>
-                    <button
-                        className="btn btn-primary me-2"
-                        onClick={() => navigate('/gestor/criar-proposta')}
-                    >
-                        Nova Proposta
-                    </button>
-                    <button
-                        className="btn btn-outline-primary me-2"
-                        onClick={() => navigate('/gestor/ver-propostas')}
-                    >
-                        Ver Propostas
-                    </button>
-                    <button className="btn btn-warning" onClick={handleLogout}>
-                        Logout
-                    </button>
-                </div>
-            </div>
 
-            {error && (
-                <div className="alert alert-danger" role="alert">
-                    {error}
-                </div>
-            )}
+                {error && (
+                    <div className="alert alert-danger" role="alert">
+                        {error}
+                    </div>
+                )}
 
-            {/* Cards de Estatísticas */}
-            <div className="row mb-4">
-                <div className="col-md-4">
-                    <div className="card bg-primary text-white">
-                        <div className="card-body">
-                            <div className="d-flex justify-content-between">
-                                <div>
-                                    <h5 className="card-title">Propostas Totais</h5>
-                                    <h3 className="mb-0">{stats.totalPropostas}</h3>
-                                </div>
-                                <div className="align-self-center">
-                                    <i className="bi bi-file-earmark-text fs-1"></i>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div className="col-md-4">
-                    <div className="card bg-success text-white">
-                        <div className="card-body">
-                            <div className="d-flex justify-content-between">
-                                <div>
-                                    <h5 className="card-title">Propostas Ativas</h5>
-                                    <h3 className="mb-0">{stats.propostasAtivas}</h3>
-                                </div>
-                                <div className="align-self-center">
-                                    <i className="bi bi-check-circle fs-1"></i>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div className="col-md-4">
-                    <div className="card bg-warning text-dark">
-                        <div className="card-body">
-                            <div className="d-flex justify-content-between">
-                                <div>
-                                    <h5 className="card-title">Pendentes</h5>
-                                    <h3 className="mb-0">{stats.propostasPendentes}</h3>
-                                </div>
-                                <div className="align-self-center">
-                                    <i className="bi bi-clock fs-1"></i>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div className="row mb-4">
-                <div className="col-md-4">
-                    <div className="card bg-info text-white">
-                        <div className="card-body">
-                            <div className="d-flex justify-content-between">
-                                <div>
-                                    <h5 className="card-title">Estudantes</h5>
-                                    <h3 className="mb-0">{stats.totalEstudantes}</h3>
-                                </div>
-                                <div className="align-self-center">
-                                    <i className="bi bi-people fs-1"></i>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div className="col-md-4">
-                    <div className="card bg-secondary text-white">
-                        <div className="card-body">
-                            <div className="d-flex justify-content-between">
-                                <div>
-                                    <h5 className="card-title">Empresas</h5>
-                                    <h3 className="mb-0">{stats.totalEmpresas}</h3>
-                                </div>
-                                <div className="align-self-center">
-                                    <i className="bi bi-building fs-1"></i>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div className="col-md-4">
-                    <div className="card bg-dark text-white">
-                        <div className="card-body">
-                            <div className="d-flex justify-content-between">
-                                <div>
-                                    <h5 className="card-title">Atribuições</h5>
-                                    <h3 className="mb-0">{stats.totalAtribuicoes}</h3>
-                                </div>
-                                <div className="align-self-center">
-                                    <i className="bi bi-link-45deg fs-1"></i>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            {/* Tabs */}
-            <ul className="nav nav-tabs mb-3">
-                <li className="nav-item">
-                    <button 
-                        className={`nav-link ${activeTab === 'overview' ? 'active' : ''}`}
-                        onClick={() => setActiveTab('overview')}
-                    >
-                        Overview
-                    </button>
-                </li>
-                <li className="nav-item">
-                    <button 
-                        className={`nav-link ${activeTab === 'propostas' ? 'active' : ''}`}
-                        onClick={() => setActiveTab('propostas')}
-                    >
-                        Propostas ({propostasFiltered.length})
-                    </button>
-                </li>
-                <li className="nav-item">
-                    <button 
-                        className={`nav-link ${activeTab === 'estudantes' ? 'active' : ''}`}
-                        onClick={() => setActiveTab('estudantes')}
-                    >
-                        Estudantes ({estudantesFiltered.length})
-                    </button>
-                </li>
-            </ul>
-
-            {/* Conteúdo das Tabs */}
-            {activeTab === 'overview' && (
-                <div className="row">
-                    <div className="col-md-6">
-                        <div className="card">
-                            <div className="card-header">
-                                <h5>Propostas Recentes</h5>
-                            </div>
+                {/* Cards de Estatísticas */}
+                <div className="row mb-4">
+                    <div className="col-md-4">
+                        <div className="card bg-primary text-white">
                             <div className="card-body">
-                                {propostas.slice(0, 5).map(proposta => (
-                                    <div key={proposta.id} className="d-flex justify-content-between align-items-center mb-2">
-                                        <div>
-                                            <strong>{proposta.titulo}</strong>
-                                            <br />
-                                            <small className="text-muted">{proposta.company_profile?.nome_empresa}</small>
-                                        </div>
-                                        {getStatusBadge(proposta.estado)}
+                                <div className="d-flex justify-content-between">
+                                    <div>
+                                        <h5 className="card-title">Propostas Totais</h5>
+                                        <h3 className="mb-0">{stats.totalPropostas}</h3>
                                     </div>
-                                ))}
-                                <div className="text-center mt-3">
-                                    <button 
-                                        className="btn btn-outline-primary btn-sm"
-                                        onClick={() => setActiveTab('propostas')}
-                                    >
-                                        Ver Todas
-                                    </button>
+                                    <div className="align-self-center">
+                                        <i className="bi bi-file-earmark-text fs-1"></i>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                    <div className="col-md-6">
-                        <div className="card">
-                            <div className="card-header">
-                                <h5>Estudantes Recentes</h5>
-                            </div>
+                    <div className="col-md-4">
+                        <div className="card bg-success text-white">
                             <div className="card-body">
-                                {estudantes.slice(0, 5).map(estudante => (
-                                    <div key={estudante.id} className="d-flex justify-content-between align-items-center mb-2">
-                                        <div>
-                                            <strong>{estudante.user?.nome}</strong>
-                                            <br />
-                                            <small className="text-muted">{estudante.curso}</small>
-                                        </div>
-                                        <span className="badge bg-info">{estudante.ano_academico}º ano</span>
+                                <div className="d-flex justify-content-between">
+                                    <div>
+                                        <h5 className="card-title">Propostas Ativas</h5>
+                                        <h3 className="mb-0">{stats.propostasAtivas}</h3>
                                     </div>
-                                ))}
-                                <div className="text-center mt-3">
-                                    <button 
-                                        className="btn btn-outline-primary btn-sm"
-                                        onClick={() => setActiveTab('estudantes')}
-                                    >
-                                        Ver Todos
-                                    </button>
+                                    <div className="align-self-center">
+                                        <i className="bi bi-check-circle fs-1"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div className="col-md-4">
+                        <div className="card bg-warning text-dark">
+                            <div className="card-body">
+                                <div className="d-flex justify-content-between">
+                                    <div>
+                                        <h5 className="card-title">Pendentes</h5>
+                                        <h3 className="mb-0">{stats.propostasPendentes}</h3>
+                                    </div>
+                                    <div className="align-self-center">
+                                        <i className="bi bi-clock fs-1"></i>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
-            )}
 
-            {activeTab === 'propostas' && (
-                <div>
-                    {/* Filtros de Propostas */}
-                    <div className="row mb-3">
-                        <div className="col-md-6">
-                            <input
-                                type="text"
-                                className="form-control"
-                                placeholder="Filtrar por título ou empresa..."
-                                value={proposalFilter}
-                                onChange={(e) => setProposalFilter(e.target.value)}
-                            />
-                        </div>
-                        <div className="col-md-6">
-                            <select
-                                className="form-select"
-                                value={proposalStatusFilter}
-                                onChange={(e) => setProposalStatusFilter(e.target.value)}
-                            >
-                                <option value="">Todos os estados</option>
-                                <option value="pendente">Pendente</option>
-                                <option value="ativa">Ativa</option>
-                                <option value="inativa">Inativa</option>
-                                <option value="rejeitada">Rejeitada</option>
-                            </select>
-                        </div>
-                    </div>
-
-                    {/* Lista de Propostas */}
-                    <div className="row">
-                        {propostasFiltered.map(proposta => (
-                            <div key={proposta.id} className="col-12 mb-3">
-                                <div className="card">
-                                    <div className="card-body">
-                                        <div className="d-flex justify-content-between align-items-start">
-                                            <div>
-                                                <h5 className="card-title">{proposta.titulo}</h5>
-                                                <p className="card-text">
-                                                    <strong>Empresa:</strong> {proposta.company_profile?.nome_empresa}<br />
-                                                    <strong>Tipo:</strong> {proposta.tipo_proposta}<br />
-                                                    <strong>Local:</strong> {proposta.local_trabalho}<br />
-                                                    <strong>Prazo:</strong> {formatDate(proposta.prazo_candidatura)}
-                                                </p>
-                                                {assignments[proposta.id] && assignments[proposta.id].length > 0 && (
-                                                    <div className="mt-2">
-                                                        <small className="text-muted">
-                                                            <i className="bi bi-person-check"></i> {assignments[proposta.id].length} estudante(s) atribuído(s)
-                                                        </small>
-                                                    </div>
-                                                )}
-                                            </div>
-                                            <div className="text-end">
-                                                {getStatusBadge(proposta.estado)}
-                                                <br />
-                                                <small className="text-muted">
-                                                    {formatDate(proposta.data_submissao)}
-                                                </small>
-                                            </div>
-                                        </div>
+                <div className="row mb-4">
+                    <div className="col-md-4">
+                        <div className="card bg-info text-white">
+                            <div className="card-body">
+                                <div className="d-flex justify-content-between">
+                                    <div>
+                                        <h5 className="card-title">Estudantes</h5>
+                                        <h3 className="mb-0">{stats.totalEstudantes}</h3>
+                                    </div>
+                                    <div className="align-self-center">
+                                        <i className="bi bi-people fs-1"></i>
                                     </div>
                                 </div>
                             </div>
-                        ))}
-                    </div>
-                </div>
-            )}
-
-            {activeTab === 'estudantes' && (
-                <div>
-                    {/* Filtros de Estudantes */}
-                    <div className="row mb-3">
-                        <div className="col-md-6">
-                            <input
-                                type="text"
-                                className="form-control"
-                                placeholder="Filtrar por nome ou email..."
-                                value={studentFilter}
-                                onChange={(e) => setStudentFilter(e.target.value)}
-                            />
-                        </div>
-                        <div className="col-md-6">
-                            <input
-                                type="text"
-                                className="form-control"
-                                placeholder="Filtrar por curso..."
-                                value={courseFilter}
-                                onChange={(e) => setCourseFilter(e.target.value)}
-                            />
                         </div>
                     </div>
-
-                    {/* Lista de Estudantes */}
-                    <div className="row">
-                        {estudantesFiltered.map(estudante => (
-                            <div key={estudante.id} className="col-md-6 mb-3">
-                                <div className="card">
-                                    <div className="card-body">
-                                        <div className="d-flex justify-content-between align-items-start">
-                                            <div>
-                                                <h5 className="card-title">{estudante.user?.nome}</h5>
-                                                <p className="card-text">
-                                                    <strong>Email:</strong> {estudante.user?.email_institucional}<br />
-                                                    <strong>Curso:</strong> {estudante.curso}<br />
-                                                    <strong>Ano:</strong> {estudante.ano_academico}º ano
-                                                </p>
-                                                {estudante.telefone && (
-                                                    <p className="card-text">
-                                                        <strong>Telefone:</strong> {estudante.telefone}
-                                                    </p>
-                                                )}
-                                            </div>
-                                            <div className="text-end">
-                                                <span className="badge bg-info">{estudante.ano_academico}º ano</span>
-                                                <br />
-                                                <small className="text-muted">
-                                                    {estudante.curso}
-                                                </small>
-                                            </div>
-                                        </div>
+                    <div className="col-md-4">
+                        <div className="card bg-secondary text-white">
+                            <div className="card-body">
+                                <div className="d-flex justify-content-between">
+                                    <div>
+                                        <h5 className="card-title">Empresas</h5>
+                                        <h3 className="mb-0">{stats.totalEmpresas}</h3>
+                                    </div>
+                                    <div className="align-self-center">
+                                        <i className="bi bi-building fs-1"></i>
                                     </div>
                                 </div>
                             </div>
-                        ))}
+                        </div>
+                    </div>
+                    <div className="col-md-4">
+                        <div className="card bg-dark text-white">
+                            <div className="card-body">
+                                <div className="d-flex justify-content-between">
+                                    <div>
+                                        <h5 className="card-title">Atribuições</h5>
+                                        <h3 className="mb-0">{stats.totalAtribuicoes}</h3>
+                                    </div>
+                                    <div className="align-self-center">
+                                        <i className="bi bi-link-45deg fs-1"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
-            )}
+
+               
+            </div>
         </div>
     );
 };

@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
+import Sidebar from '../componentes/Sidebar'
 
 const PaginaDepartamentos = () => {
   const [showModal, setShowModal] = useState(false);
@@ -101,100 +102,103 @@ const PaginaDepartamentos = () => {
   };
 
   return (
-    <div className="container mt-5">
-      <h2>Departamentos</h2>
+    <div className="d-flex">
+     <Sidebar />
+      <div className="container mt-5">
+        <h2>Departamentos</h2>
 
-      <button className="btn btn-primary my-3" onClick={() => {
-        setShowModal(true);
-        setModoEdicao(false);
-        setEditId(null);
-        setForm({ departamento: '', user_id: '' });
-      }}>
-        Adicionar Departamento
-      </button>
+        <button className="btn btn-primary my-3" onClick={() => {
+          setShowModal(true);
+          setModoEdicao(false);
+          setEditId(null);
+          setForm({ departamento: '', user_id: '' });
+        }}>
+          Adicionar Departamento
+        </button>
 
-      {mensagem && <div className="alert alert-info">{mensagem}</div>}
+        {mensagem && <div className="alert alert-info">{mensagem}</div>}
 
-      {showModal && (
-        <div className="modal show d-block" tabIndex="-1">
-          <div className="modal-dialog">
-            <div className="modal-content">
-              <form onSubmit={handleSubmit}>
-                <div className="modal-header">
-                  <h5 className="modal-title">{modoEdicao ? 'Editar Departamento' : 'Novo Departamento'}</h5>
-                  <button type="button" className="btn-close" onClick={() => setShowModal(false)}></button>
-                </div>
-                <div className="modal-body">
-                  <div className="mb-3">
-                    <label className="form-label">Nome do Departamento</label>
-                    <input
-                      type="text"
-                      className="form-control"
-                      name="departamento"
-                      value={form.departamento}
-                      onChange={handleChange}
-                      required
-                    />
+        {showModal && (
+          <div className="modal show d-block" tabIndex="-1">
+            <div className="modal-dialog">
+              <div className="modal-content">
+                <form onSubmit={handleSubmit}>
+                  <div className="modal-header">
+                    <h5 className="modal-title">{modoEdicao ? 'Editar Departamento' : 'Novo Departamento'}</h5>
+                    <button type="button" className="btn-close" onClick={() => setShowModal(false)}></button>
                   </div>
-                  <div className="mb-3">
-                    <label className="form-label">Gestor Responsável</label>
-                    <select
-                      className="form-select"
-                      name="user_id"
-                      value={form.user_id}
-                      onChange={handleChange}
-                      required
-                    >
-                      <option value="">Selecionar gestor</option>
-                      {gestores.map(gestor => (
-                        <option key={gestor.id} value={gestor.id}>
-                          {gestor.nome} ({gestor.email_institucional || gestor.email})
-                        </option>
-                      ))}
-                    </select>
+                  <div className="modal-body">
+                    <div className="mb-3">
+                      <label className="form-label">Nome do Departamento</label>
+                      <input
+                        type="text"
+                        className="form-control"
+                        name="departamento"
+                        value={form.departamento}
+                        onChange={handleChange}
+                        required
+                      />
+                    </div>
+                    <div className="mb-3">
+                      <label className="form-label">Gestor Responsável</label>
+                      <select
+                        className="form-select"
+                        name="user_id"
+                        value={form.user_id}
+                        onChange={handleChange}
+                        required
+                      >
+                        <option value="">Selecionar gestor</option>
+                        {gestores.map(gestor => (
+                          <option key={gestor.id} value={gestor.id}>
+                            {gestor.nome} ({gestor.email_institucional || gestor.email})
+                          </option>
+                        ))}
+                      </select>
+                    </div>
                   </div>
-                </div>
-                <div className="modal-footer">
-                  <button type="button" className="btn btn-secondary" onClick={() => setShowModal(false)}>
-                    Cancelar
-                  </button>
-                  <button type="submit" className="btn btn-success">{modoEdicao ? 'Guardar Alterações' : 'Criar'}</button>
-                </div>
-              </form>
+                  <div className="modal-footer">
+                    <button type="button" className="btn btn-secondary" onClick={() => setShowModal(false)}>
+                      Cancelar
+                    </button>
+                    <button type="submit" className="btn btn-success">{modoEdicao ? 'Guardar Alterações' : 'Criar'}</button>
+                  </div>
+                </form>
+              </div>
             </div>
           </div>
-        </div>
-      )}
+        )}
 
-      {departamentos.length > 0 ? (
-        <table className="table table-bordered table-striped mt-4">
-          <thead>
-            <tr>
-              <th>ID</th>
-              <th>Departamento</th>
-              <th>Gestor</th>
-              <th>Email</th>
-              <th>Ações</th>
-            </tr>
-          </thead>
-          <tbody>
-            {departamentos.map(dep => (
-              <tr key={dep.id}>
-                <td>{dep.id}</td>
-                <td>{dep.departamento}</td>
-                <td>{dep.user?.nome || 'N/A'}</td>
-                <td>{dep.user?.email_institucional || 'N/A'}</td>
-                <td>
-                  <button className="btn btn-sm btn-warning me-2" onClick={() => handleEdit(dep)}>Editar</button>
-                  <button className="btn btn-sm btn-danger" onClick={() => handleDelete(dep.id)}>Eliminar</button>
-                </td>
+        {departamentos.length > 0 ? (
+          <table className="table table-bordered table-striped mt-4">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Departamento</th>
+                <th>Gestor</th>
+                <th>Email</th>
+                <th>Ações</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
-      ) : (
-        <p className="mt-4">Nenhum departamento criado ainda.</p>
-      )}
+            </thead>
+            <tbody>
+              {departamentos.map(dep => (
+                <tr key={dep.id}>
+                  <td>{dep.id}</td>
+                  <td>{dep.departamento}</td>
+                  <td>{dep.user?.nome || 'N/A'}</td>
+                  <td>{dep.user?.email_institucional || 'N/A'}</td>
+                  <td>
+                    <button className="btn btn-sm btn-warning me-2" onClick={() => handleEdit(dep)}>Editar</button>
+                    <button className="btn btn-sm btn-danger" onClick={() => handleDelete(dep.id)}>Eliminar</button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        ) : (
+          <p className="mt-4">Nenhum departamento criado ainda.</p>
+        )}
+      </div>
     </div>
   );
 };

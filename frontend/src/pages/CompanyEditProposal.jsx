@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import axios from 'axios';
 import { getUserIdFromToken, getUserRoleFromToken } from '../componentes/jwtdecode';
+import Sidebar from '../componentes/Sidebar'
 
 const CompanyEditProposal = () => {
     const navigate = useNavigate();
@@ -188,209 +189,212 @@ const CompanyEditProposal = () => {
     }
 
     return (
-        <div className="container mt-4">
-            <div className="d-flex justify-content-between align-items-center mb-4">
-                <div>
-                    <h2>Editar Proposta</h2>
-                    {companyProfile && (
-                        <p className="text-muted mb-0">
-                            <strong>{companyProfile.nome_empresa}</strong>
-                        </p>
-                    )}
-                </div>
-                <div>
-                    <button 
-                        className="btn btn-outline-secondary me-2" 
-                        onClick={() => navigate('/empresa/ver-propostas')}
-                    >
-                        Voltar às Propostas
-                    </button>
-                    <button className="btn btn-warning" onClick={handleLogout}>
-                        Logout
-                    </button>
-                </div>
-            </div>
-
-            {proposta && (
-                <div className="alert alert-info d-flex justify-content-between align-items-center mb-4">
+        <div className="d-flex">
+         <Sidebar />
+            <div className="container mt-4">
+                <div className="d-flex justify-content-between align-items-center mb-4">
                     <div>
-                        <strong>Estado atual:</strong> {getStatusBadge(proposta.estado)}
-                        <span className="ms-3">
-                            <strong>ID:</strong> #{proposta.id}
-                        </span>
+                        <h2>Editar Proposta</h2>
+                        {companyProfile && (
+                            <p className="text-muted mb-0">
+                                <strong>{companyProfile.nome_empresa}</strong>
+                            </p>
+                        )}
                     </div>
-                </div>
-            )}
-
-            {success && (
-                <div className="alert alert-success" role="alert">
-                    {success}
-                </div>
-            )}
-
-            {error && (
-                <div className="alert alert-danger" role="alert">
-                    {error}
-                </div>
-            )}
-
-            <form onSubmit={handleSubmit} className="row g-3">
-                <div className="col-md-8">
-                    <label className="form-label fw-semibold">Título da Proposta</label>
-                    <input 
-                        type="text" 
-                        className="form-control" 
-                        name="titulo" 
-                        value={form.titulo} 
-                        onChange={handleChange} 
-                        required 
-                    />
-                </div>
-
-                <div className="col-md-4">
-                    <label className="form-label fw-semibold">Tipo de Proposta</label>
-                    <select 
-                        name="tipo_proposta" 
-                        className="form-select" 
-                        value={form.tipo_proposta} 
-                        onChange={handleChange}
-                        required
-                    >
-                        <option value="emprego">Emprego</option>
-                        <option value="estágio">Estágio</option>
-                        <option value="outra">Outra</option>
-                    </select>
-                </div>
-
-                <div className="col-12">
-                    <label className="form-label fw-semibold">Descrição</label>
-                    <textarea 
-                        className="form-control" 
-                        name="descricao" 
-                        rows="4"
-                        value={form.descricao} 
-                        onChange={handleChange}
-                        placeholder="Descreva a proposta em detalhes..."
-                    />
-                </div>
-
-                <div className="col-md-6">
-                    <label className="form-label fw-semibold">Perfil do Candidato</label>
-                    <textarea 
-                        className="form-control" 
-                        name="perfil_candidato" 
-                        rows="3"
-                        value={form.perfil_candidato} 
-                        onChange={handleChange}
-                        placeholder="Que tipo de candidato procura?"
-                    />
-                </div>
-
-                <div className="col-md-6">
-                    <label className="form-label fw-semibold">Local de Trabalho</label>
-                    <input 
-                        type="text" 
-                        className="form-control" 
-                        name="local_trabalho" 
-                        value={form.local_trabalho} 
-                        onChange={handleChange}
-                        placeholder="Ex: Porto, Remoto, Híbrido"
-                    />
-                </div>
-
-                <div className="col-md-6">
-                    <label className="form-label fw-semibold">Prazo de Candidatura</label>
-                    <input 
-                        type="date" 
-                        className="form-control" 
-                        name="prazo_candidatura" 
-                        value={form.prazo_candidatura} 
-                        onChange={handleChange}
-                    />
-                </div>
-
-                <div className="col-md-6">
-                    <label className="form-label fw-semibold">Tipo de Contrato</label>
-                    <input 
-                        type="text" 
-                        className="form-control" 
-                        name="tipo_contrato" 
-                        value={form.tipo_contrato} 
-                        onChange={handleChange}
-                        placeholder="Ex: Contrato sem termo, Part-time"
-                    />
-                </div>
-
-                <div className="col-12">
-                    <label className="form-label fw-semibold">Competências Técnicas</label>
-                    <textarea 
-                        className="form-control" 
-                        name="competencias_tecnicas" 
-                        rows="3"
-                        value={form.competencias_tecnicas} 
-                        onChange={handleChange}
-                        placeholder="Linguagens, frameworks, ferramentas..."
-                    />
-                </div>
-
-                <div className="col-12">
-                    <label className="form-label fw-semibold">Soft Skills</label>
-                    <textarea 
-                        className="form-control" 
-                        name="soft_skills" 
-                        rows="3"
-                        value={form.soft_skills} 
-                        onChange={handleChange}
-                        placeholder="Trabalho em equipa, comunicação, liderança..."
-                    />
-                </div>
-
-                <div className="col-md-6">
-                    <label className="form-label fw-semibold">Nome do Contacto</label>
-                    <input 
-                        type="text" 
-                        className="form-control" 
-                        name="contacto_nome" 
-                        value={form.contacto_nome} 
-                        onChange={handleChange}
-                        placeholder="Nome da pessoa de contacto"
-                    />
-                </div>
-
-                <div className="col-md-6">
-                    <label className="form-label fw-semibold">Email do Contacto</label>
-                    <input 
-                        type="email" 
-                        className="form-control" 
-                        name="contacto_email" 
-                        value={form.contacto_email} 
-                        onChange={handleChange}
-                        placeholder="email@empresa.com"
-                    />
-                </div>
-
-                <div className="col-12 mt-4">
-                    <div className="d-flex gap-2">
-                        <button type="submit" className="btn btn-primary px-4">
-                            Guardar Alterações
-                        </button>
+                    <div>
                         <button 
-                            type="button" 
-                            className="btn btn-secondary px-4" 
+                            className="btn btn-outline-secondary me-2" 
                             onClick={() => navigate('/empresa/ver-propostas')}
                         >
-                            Cancelar
+                            Voltar às Propostas
+                        </button>
+                        <button className="btn btn-warning" onClick={handleLogout}>
+                            Logout
                         </button>
                     </div>
                 </div>
-            </form>
 
-            {proposta?.estado === 'pendente' && (
-                <div className="alert alert-warning mt-4">
-                    <strong>Nota:</strong> Esta proposta está pendente de validação pelo administrador. 
-                    Após a validação, ela ficará visível para os candidatos.
-                </div>
-            )}
+                {proposta && (
+                    <div className="alert alert-info d-flex justify-content-between align-items-center mb-4">
+                        <div>
+                            <strong>Estado atual:</strong> {getStatusBadge(proposta.estado)}
+                            <span className="ms-3">
+                                <strong>ID:</strong> #{proposta.id}
+                            </span>
+                        </div>
+                    </div>
+                )}
+
+                {success && (
+                    <div className="alert alert-success" role="alert">
+                        {success}
+                    </div>
+                )}
+
+                {error && (
+                    <div className="alert alert-danger" role="alert">
+                        {error}
+                    </div>
+                )}
+
+                <form onSubmit={handleSubmit} className="row g-3">
+                    <div className="col-md-8">
+                        <label className="form-label fw-semibold">Título da Proposta</label>
+                        <input 
+                            type="text" 
+                            className="form-control" 
+                            name="titulo" 
+                            value={form.titulo} 
+                            onChange={handleChange} 
+                            required 
+                        />
+                    </div>
+
+                    <div className="col-md-4">
+                        <label className="form-label fw-semibold">Tipo de Proposta</label>
+                        <select 
+                            name="tipo_proposta" 
+                            className="form-select" 
+                            value={form.tipo_proposta} 
+                            onChange={handleChange}
+                            required
+                        >
+                            <option value="emprego">Emprego</option>
+                            <option value="estágio">Estágio</option>
+                            <option value="outra">Outra</option>
+                        </select>
+                    </div>
+
+                    <div className="col-12">
+                        <label className="form-label fw-semibold">Descrição</label>
+                        <textarea 
+                            className="form-control" 
+                            name="descricao" 
+                            rows="4"
+                            value={form.descricao} 
+                            onChange={handleChange}
+                            placeholder="Descreva a proposta em detalhes..."
+                        />
+                    </div>
+
+                    <div className="col-md-6">
+                        <label className="form-label fw-semibold">Perfil do Candidato</label>
+                        <textarea 
+                            className="form-control" 
+                            name="perfil_candidato" 
+                            rows="3"
+                            value={form.perfil_candidato} 
+                            onChange={handleChange}
+                            placeholder="Que tipo de candidato procura?"
+                        />
+                    </div>
+
+                    <div className="col-md-6">
+                        <label className="form-label fw-semibold">Local de Trabalho</label>
+                        <input 
+                            type="text" 
+                            className="form-control" 
+                            name="local_trabalho" 
+                            value={form.local_trabalho} 
+                            onChange={handleChange}
+                            placeholder="Ex: Porto, Remoto, Híbrido"
+                        />
+                    </div>
+
+                    <div className="col-md-6">
+                        <label className="form-label fw-semibold">Prazo de Candidatura</label>
+                        <input 
+                            type="date" 
+                            className="form-control" 
+                            name="prazo_candidatura" 
+                            value={form.prazo_candidatura} 
+                            onChange={handleChange}
+                        />
+                    </div>
+
+                    <div className="col-md-6">
+                        <label className="form-label fw-semibold">Tipo de Contrato</label>
+                        <input 
+                            type="text" 
+                            className="form-control" 
+                            name="tipo_contrato" 
+                            value={form.tipo_contrato} 
+                            onChange={handleChange}
+                            placeholder="Ex: Contrato sem termo, Part-time"
+                        />
+                    </div>
+
+                    <div className="col-12">
+                        <label className="form-label fw-semibold">Competências Técnicas</label>
+                        <textarea 
+                            className="form-control" 
+                            name="competencias_tecnicas" 
+                            rows="3"
+                            value={form.competencias_tecnicas} 
+                            onChange={handleChange}
+                            placeholder="Linguagens, frameworks, ferramentas..."
+                        />
+                    </div>
+
+                    <div className="col-12">
+                        <label className="form-label fw-semibold">Soft Skills</label>
+                        <textarea 
+                            className="form-control" 
+                            name="soft_skills" 
+                            rows="3"
+                            value={form.soft_skills} 
+                            onChange={handleChange}
+                            placeholder="Trabalho em equipa, comunicação, liderança..."
+                        />
+                    </div>
+
+                    <div className="col-md-6">
+                        <label className="form-label fw-semibold">Nome do Contacto</label>
+                        <input 
+                            type="text" 
+                            className="form-control" 
+                            name="contacto_nome" 
+                            value={form.contacto_nome} 
+                            onChange={handleChange}
+                            placeholder="Nome da pessoa de contacto"
+                        />
+                    </div>
+
+                    <div className="col-md-6">
+                        <label className="form-label fw-semibold">Email do Contacto</label>
+                        <input 
+                            type="email" 
+                            className="form-control" 
+                            name="contacto_email" 
+                            value={form.contacto_email} 
+                            onChange={handleChange}
+                            placeholder="email@empresa.com"
+                        />
+                    </div>
+
+                    <div className="col-12 mt-4">
+                        <div className="d-flex gap-2">
+                            <button type="submit" className="btn btn-primary px-4">
+                                Guardar Alterações
+                            </button>
+                            <button 
+                                type="button" 
+                                className="btn btn-secondary px-4" 
+                                onClick={() => navigate('/empresa/ver-propostas')}
+                            >
+                                Cancelar
+                            </button>
+                        </div>
+                    </div>
+                </form>
+
+                {proposta?.estado === 'pendente' && (
+                    <div className="alert alert-warning mt-4">
+                        <strong>Nota:</strong> Esta proposta está pendente de validação pelo administrador. 
+                        Após a validação, ela ficará visível para os candidatos.
+                    </div>
+                )}
+            </div>
         </div>
     );
 };

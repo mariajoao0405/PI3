@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { getUserRoleFromToken } from '../componentes/jwtdecode';
+import SideBar from '../componentes/Sidebar';
 
 const PaginaAdmin = () => {
   const [users, setUsers] = useState([]);
@@ -98,92 +99,95 @@ const PaginaAdmin = () => {
 
 
   return (
-    <div className="container mt-5">
-      <div className="d-flex justify-content-between align-items-center mb-4">
-        <h2>Utilizadores do Sistema</h2>
-        <button className="btn btn-success" onClick={handleShowModal}>
-          Criar Utilizador
-        </button>
-      </div>
-
-      {loading ? (
-        <div className="text-center">
-          <div className="spinner-border text-warning" role="status"></div>
-          <p className="mt-2">Carregando utilizadores...</p>
+    <div className="d-flex">
+      <SideBar />
+      <div className="container mt-5">
+        <div className="d-flex justify-content-between align-items-center mb-4">
+          <h2>Utilizadores do Sistema</h2>
+          <button className="btn btn-success" onClick={handleShowModal}>
+            Criar Utilizador
+          </button>
         </div>
-      ) : error ? (
-        <div className="alert alert-danger">{error}</div>
-      ) : users.length === 0 ? (
-        <p>Não há utilizadores disponíveis.</p>
-      ) : (
-        <table className="table table-dark table-striped table-bordered">
-          <thead>
-            <tr>
-              <th>ID</th>
-              <th>Nome</th>
-              <th>Email</th>
-              <th>Tipo</th>
-              <th>Ativo</th>
-            </tr>
-          </thead>
-          <tbody>
-            {users.map((user, index) => (
-              <tr key={getUserId(user) || index}>
-                <td>{getUserId(user)}</td>
-                <td>{user.nome || 'N/A'}</td>
-                <td>{getUserEmail(user)}</td>
-                <td>{user.tipo_utilizador || 'N/A'}</td>
-                <td>{user.ativo !== undefined ? (user.ativo ? 'Sim' : 'Não') : 'N/A'}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      )}
 
-      {/* MODAL */}
-      {showModal && (
-        <div className="modal show d-block" tabIndex="-1" role="dialog">
-          <div className="modal-dialog" role="document">
-            <div className="modal-content">
-              <form onSubmit={handleSubmit}>
-                <div className="modal-header">
-                  <h5 className="modal-title">Criar Novo Utilizador</h5>
-                  <button type="button" className="btn-close" onClick={handleCloseModal}></button>
-                </div>
-                <div className="modal-body">
-                  {mensagemForm && <div className="alert alert-danger">{mensagemForm}</div>}
-                  <div className="mb-3">
-                    <label className="form-label">Nome</label>
-                    <input type="text" className="form-control" name="nome" value={form.nome} onChange={handleChange} required />
+        {loading ? (
+          <div className="text-center">
+            <div className="spinner-border text-warning" role="status"></div>
+            <p className="mt-2">Carregando utilizadores...</p>
+          </div>
+        ) : error ? (
+          <div className="alert alert-danger">{error}</div>
+        ) : users.length === 0 ? (
+          <p>Não há utilizadores disponíveis.</p>
+        ) : (
+          <table className="table table-dark table-striped table-bordered">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Nome</th>
+                <th>Email</th>
+                <th>Tipo</th>
+                <th>Ativo</th>
+              </tr>
+            </thead>
+            <tbody>
+              {users.map((user, index) => (
+                <tr key={getUserId(user) || index}>
+                  <td>{getUserId(user)}</td>
+                  <td>{user.nome || 'N/A'}</td>
+                  <td>{getUserEmail(user)}</td>
+                  <td>{user.tipo_utilizador || 'N/A'}</td>
+                  <td>{user.ativo !== undefined ? (user.ativo ? 'Sim' : 'Não') : 'N/A'}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        )}
+
+        {/* MODAL */}
+        {showModal && (
+          <div className="modal show d-block" tabIndex="-1" role="dialog">
+            <div className="modal-dialog" role="document">
+              <div className="modal-content">
+                <form onSubmit={handleSubmit}>
+                  <div className="modal-header">
+                    <h5 className="modal-title">Criar Novo Utilizador</h5>
+                    <button type="button" className="btn-close" onClick={handleCloseModal}></button>
                   </div>
-                  <div className="mb-3">
-                    <label className="form-label">Email</label>
-                    <input type="email" className="form-control" name="email" value={form.email} onChange={handleChange} required />
+                  <div className="modal-body">
+                    {mensagemForm && <div className="alert alert-danger">{mensagemForm}</div>}
+                    <div className="mb-3">
+                      <label className="form-label">Nome</label>
+                      <input type="text" className="form-control" name="nome" value={form.nome} onChange={handleChange} required />
+                    </div>
+                    <div className="mb-3">
+                      <label className="form-label">Email</label>
+                      <input type="email" className="form-control" name="email" value={form.email} onChange={handleChange} required />
+                    </div>
+                    <div className="mb-3">
+                      <label className="form-label">Password</label>
+                      <input type="password" className="form-control" name="password" value={form.password} onChange={handleChange} required />
+                    </div>
+                    <div className="mb-3">
+                      <label className="form-label">Tipo de Utilizador</label>
+                      <select className="form-select" name="tipo_utilizador" value={form.tipo_utilizador} onChange={handleChange}>
+                        {['administrador', 'gestor', 'estudante', 'empresa'].map(tipo => (
+                          <option key={tipo} value={tipo}>{tipo}</option>
+                        ))}
+                      </select>
+                    </div>
                   </div>
-                  <div className="mb-3">
-                    <label className="form-label">Password</label>
-                    <input type="password" className="form-control" name="password" value={form.password} onChange={handleChange} required />
+                  <div className="modal-footer">
+                    <button type="button" className="btn btn-secondary" onClick={handleCloseModal}>
+                      Cancelar
+                    </button>
+                    <button type="submit" className="btn btn-primary">Criar</button>
                   </div>
-                  <div className="mb-3">
-                    <label className="form-label">Tipo de Utilizador</label>
-                    <select className="form-select" name="tipo_utilizador" value={form.tipo_utilizador} onChange={handleChange}>
-                      {['administrador', 'gestor', 'estudante', 'empresa'].map(tipo => (
-                        <option key={tipo} value={tipo}>{tipo}</option>
-                      ))}
-                    </select>
-                  </div>
-                </div>
-                <div className="modal-footer">
-                  <button type="button" className="btn btn-secondary" onClick={handleCloseModal}>
-                    Cancelar
-                  </button>
-                  <button type="submit" className="btn btn-primary">Criar</button>
-                </div>
-              </form>
+                </form>
+              </div>
             </div>
           </div>
-        </div>
-      )}
+        )}
+      </div>
     </div>
   );
 };
