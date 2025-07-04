@@ -11,30 +11,25 @@ exports.listProposals = async (req, res) => {
       include: [
         {
           model: User,
-          as: 'criador',
+          as: 'criador', // Usar o alias definido
           attributes: ['id', 'nome', 'email_institucional', 'tipo_utilizador'],
           include: [
             {
               model: DepartmentProfile,
+              as: 'department_profile', // Usar o alias definido
               attributes: ['id', 'departamento'],
-              required: false // LEFT JOIN para não excluir propostas sem departamento
+              required: false
             }
           ]
         },
         {
           model: CompanyProfile,
+          as: 'company_profile', // Usar o alias definido
           attributes: ['id', 'nome_empresa', 'nif', 'website']
         }
       ],
-      order: [['data_submissao', 'DESC']] // Ordenar por data mais recente
+      order: [['data_submissao', 'DESC']]
     });
-
-    console.log('📊 [DEBUG] Total de propostas encontradas:', proposals.length);
-
-    // Debug: verificar estrutura dos dados
-    if (proposals.length > 0) {
-      console.log('🔍 [DEBUG] Primeira proposta:', JSON.stringify(proposals[0], null, 2));
-    }
 
     return res.status(200).json({ success: true, data: proposals });
   } catch (error) {
@@ -364,9 +359,11 @@ exports.getProposalWithAssignments = async (req, res) => {
       include: [
         {
           model: StudentProfile,
+          as: 'student_profile',
           include: [
             {
               model: User,
+              as: 'user',
               attributes: ['id', 'nome', 'email_institucional']
             }
           ]

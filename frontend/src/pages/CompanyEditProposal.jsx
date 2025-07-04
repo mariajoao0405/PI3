@@ -337,12 +337,12 @@ const CompanyEditProposal = () => {
 
                     <div className="col-12 mt-4">
                         <div className="d-flex gap-2">
-                            <button type="submit" className="btn btn-primary px-4">
+                            <button type="submit" className="btn btn-dark mb-4">
                                 Guardar Alterações
                             </button>
                             <button 
                                 type="button" 
-                                className="btn btn-secondary px-4" 
+                                className="btn btn-secondary mb-4" 
                                 onClick={() => navigate('/empresa/ver-propostas')}
                             >
                                 Cancelar

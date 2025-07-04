@@ -11,6 +11,8 @@ const CompanyAllProposals = () => {
   const [error, setError] = useState('');
   const [filtroTipo, setFiltroTipo] = useState('');
   const [filtroEstado, setFiltroEstado] = useState('');
+  const [companyProfile, setCompanyProfile] = useState(null);
+  const [userId, setUserId] = useState(null);
 
   useEffect(() => {
     // Verificar se é empresa
@@ -26,23 +28,48 @@ const CompanyAllProposals = () => {
       return;
     }
 
-    fetchPropostas();
+    setUserId(id);
+    fetchData(id);
   }, [navigate]);
 
-  const fetchPropostas = async () => {
+  const fetchData = async (id) => {
     setLoading(true);
     setError('');
     try {
       const token = localStorage.getItem('authToken');
+      
+      // Buscar perfil da empresa primeiro
+      const profileRes = await axios.get(`http://localhost:3000/companies/user/${id}`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+
+      const profile = Array.isArray(profileRes.data?.data) ? profileRes.data.data[0] : profileRes.data?.data;
+      setCompanyProfile(profile);
+
+      // Buscar todas as propostas
       const response = await axios.get('http://localhost:3000/proposals/proposals', {
         headers: { Authorization: `Bearer ${token}` }
       });
       
-      // Filtrar apenas propostas ativas
-      const activeProposals = response.data.data?.filter(p => p.estado === 'ativa') || [];
-      setPropostas(activeProposals);
+      const allProposals = response.data.data || [];
+      
+      // Filtrar propostas:
+      // 1. Excluir propostas da própria empresa
+      // 2. Mostrar apenas propostas ativas
+      const filteredProposals = allProposals.filter(proposta => {
+        // Se a empresa não tem perfil, mostrar todas as propostas ativas
+        if (!profile) {
+          return proposta.estado === 'ativa';
+        }
+        
+        // Excluir propostas da própria empresa e mostrar apenas ativas
+        return proposta.empresa_id !== profile.id && proposta.estado === 'ativa';
+      });
+
+      setPropostas(filteredProposals);
+      
     } catch (err) {
-      console.error('Erro ao carregar propostas:', err);
+      console.error('Erro ao carregar dados:', err);
       if (err.response?.status === 401 || err.response?.status === 403) {
         localStorage.removeItem('authToken');
         navigate('/login');
@@ -108,15 +135,14 @@ const CompanyAllProposals = () => {
             <div>
               <h2 className="mb-0">Todas as Propostas</h2>
               <p className="text-muted mb-0">
-                {getPropostasFiltradas().length} proposta(s) disponível(is)
+                {getPropostasFiltradas().length} proposta(s) de outras empresas disponível(is)
               </p>
+              {companyProfile && (
+                <small className="text-muted">
+                  Propostas da sua empresa ({companyProfile.nome_empresa}) não aparecem aqui
+                </small>
+              )}
             </div>
-            <button
-              className="btn btn-outline-primary"
-              onClick={() => navigate('/empresa')}
-            >
-              <i className="bi bi-arrow-left"></i> Voltar ao Dashboard
-            </button>
           </div>
 
           {error && (
@@ -138,8 +164,8 @@ const CompanyAllProposals = () => {
                 >
                   <option value="">Todos os tipos</option>
                   <option value="emprego">Emprego</option>
-                  <option value="estagio">Estágio</option>
-                  <option value="projeto">Projeto</option>
+                  <option value="estágio">Estágio</option>
+                  <option value="outra">Outra</option>
                 </select>
               </div>
               <div className="col-md-6">
@@ -151,24 +177,47 @@ const CompanyAllProposals = () => {
                 >
                   <option value="">Todos os estados</option>
                   <option value="ativa">Ativa</option>
-                  <option value="pendente">Pendente</option>
-                  <option value="inativa">Inativa</option>
                 </select>
               </div>
             </div>
           </div>
 
           {/* Lista de Propostas */}
-          {getPropostasFiltradas().length === 0 ? (
+          {!companyProfile ? (
+            <div className="alert alert-warning" role="alert">
+              <h5>Perfil da Empresa Não Encontrado</h5>
+              <p>Você precisa completar o perfil da sua empresa para visualizar propostas de outras empresas.</p>
+              <button
+                className="btn btn-primary"
+                onClick={() => navigate(`/perfil-empresa/${userId}`)}
+              >
+                Completar Perfil
+              </button>
+            </div>
+          ) : getPropostasFiltradas().length === 0 ? (
             <div className="bg-white rounded shadow-sm p-5">
               <div className="text-center text-muted">
                 <i className="bi bi-search" style={{ fontSize: '3rem' }}></i>
                 <h5 className="mt-3">Nenhuma proposta encontrada</h5>
                 <p className="mb-0">
                   {propostas.length === 0
-                    ? 'Não há propostas disponíveis no momento.'
+                    ? 'Não há propostas de outras empresas disponíveis no momento.'
                     : 'Tente ajustar os filtros para encontrar propostas.'}
                 </p>
+                <div className="mt-3">
+                  <button
+                    className="btn btn-outline-primary me-2"
+                    onClick={() => navigate('/empresa/ver-propostas')}
+                  >
+                    Ver Minhas Propostas
+                  </button>
+                  <button
+                    className="btn btn-primary"
+                    onClick={() => navigate('/empresa/criar-proposta')}
+                  >
+                    Criar Nova Proposta
+                  </button>
+                </div>
               </div>
             </div>
           ) : (
@@ -237,7 +286,7 @@ const CompanyAllProposals = () => {
                           <h6 className="text-muted mb-2">
                             <i className="bi bi-person-check"></i> Perfil do Candidato
                           </h6>
-                          <p className="mb-3">{proposta.perfil_candidato}</p>
+                          <p className="mb-3">{proposta.perfil_candidato || 'N/A'}</p>
                         </div>
                         <div className="col-md-6">
                           {proposta.competencias_tecnicas && (
@@ -264,12 +313,12 @@ const CompanyAllProposals = () => {
                         </div>
                       )}
 
-                      {/* Área de informação (sem botões de ação) */}
+                      {/* Área de informação */}
                       <div className="mt-3 p-3 bg-light rounded">
                         <div className="d-flex align-items-center justify-content-center">
                           <i className="bi bi-info-circle text-primary me-2"></i>
                           <span className="text-muted">
-                            Esta é uma visualização apenas. Não é possível atribuir estudantes a propostas de outras empresas.
+                            Esta é uma visualização de propostas de outras empresas. Para ver/editar suas propostas, acesse "Ver as minhas Propostas".
                           </span>
                         </div>
                       </div>

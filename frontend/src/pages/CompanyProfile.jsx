@@ -77,7 +77,15 @@ const CompanyProfile = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        
+        // Validação básica
+        if (!form.nome_empresa.trim()) {
+            setError('Nome da empresa é obrigatório.');
+            return;
+        }
+
         try {
+            setError('');
             const token = localStorage.getItem('authToken');
             
             if (!perfil || isPerfilVazio(perfil)) {
@@ -96,9 +104,11 @@ const CompanyProfile = () => {
             }
 
             alert('Perfil atualizado com sucesso!');
+            setEditMode(false);
             window.location.reload();
         } catch (err) {
-            alert('Erro ao atualizar perfil');
+            console.error('Erro ao atualizar perfil:', err);
+            setError(err.response?.data?.error || 'Erro ao atualizar perfil');
         }
     };
 
@@ -107,9 +117,12 @@ const CompanyProfile = () => {
         return name.split(' ').map(n => n[0]).join('').toUpperCase().substring(0, 2);
     };
 
-    const renderField = (label, name, type = 'text', textarea = false) => (
+    const renderField = (label, name, type = 'text', textarea = false, required = false) => (
         <div className="mb-4">
-            <label className="form-label fw-medium" style={{ color: '#666' }}>{label}</label>
+            <label className="form-label fw-medium" style={{ color: '#666' }}>
+                {label}
+                {required && <span className="text-danger ms-1">*</span>}
+            </label>
             {textarea ? (
                 <textarea
                     className="form-control border-0 rounded-3"
@@ -117,6 +130,7 @@ const CompanyProfile = () => {
                     name={name}
                     value={form[name]}
                     onChange={handleChange}
+                    required={required}
                 />
             ) : (
                 <input
@@ -126,6 +140,7 @@ const CompanyProfile = () => {
                     name={name}
                     value={form[name]}
                     onChange={handleChange}
+                    required={required}
                 />
             )}
         </div>
@@ -209,34 +224,43 @@ const CompanyProfile = () => {
 
                                     <div className="row">
                                         <div className="col-md-6">
-                                            {renderField('Nome da Empresa', 'nome_empresa')}
+                                            {renderField('Nome da Empresa', 'nome_empresa', 'text', false, true)}
                                         </div>
                                         <div className="col-md-6">
-                                            {renderField('Email', 'email_placeholder', 'email')}
-                                        </div>
-                                    </div>
-
-
-                                    {/* Localização e Contacto */}
-                                    <div className="row mb-4">
-                                        <div className="col-12">
-                                            <h6 className="text-muted mb-3 pb-2 border-bottom">Localização e Contacto</h6>
+                                            {renderField('NIF/NIPC', 'nif')}
                                         </div>
                                     </div>
 
                                     <div className="row">
                                         <div className="col-md-6">
-                                            {renderField('Área', 'website')}
+                                            {renderField('Website', 'website', 'url')}
                                         </div>
                                         <div className="col-md-6">
-                                            {renderField('Localização', 'morada')}
+                                            {renderField('Telefone de Contacto', 'telefone_contacto', 'tel')}
                                         </div>
                                     </div>
 
-                                    {renderField('Contacto', 'telefone_contacto', 'text', true)}
+                                    {/* Localização */}
+                                    <div className="row mb-4">
+                                        <div className="col-12">
+                                            <h6 className="text-muted mb-3 pb-2 border-bottom">Localização</h6>
+                                        </div>
+                                    </div>
+
+                                    {renderField('Morada Completa', 'morada', 'text', true)}
 
                                     {/* Botões */}
                                     <div className="d-flex justify-content-end gap-3 mt-4">
+                                        {editMode && (
+                                            <button 
+                                                type="button" 
+                                                className="btn btn-outline-secondary"
+                                                style={{ borderRadius: '25px', padding: '10px 30px' }}
+                                                onClick={() => setEditMode(false)}
+                                            >
+                                                Cancelar
+                                            </button>
+                                        )}
                                         <button 
                                             type="submit" 
                                             className="btn text-white"
@@ -247,7 +271,7 @@ const CompanyProfile = () => {
                                                 border: 'none'
                                             }}
                                         >
-                                            Editar
+                                            {!perfil || isPerfilVazio(perfil) ? 'Criar Perfil' : 'Guardar Alterações'}
                                         </button>
                                     </div>
                                 </form>
@@ -268,49 +292,50 @@ const CompanyProfile = () => {
                                                 <p className="mb-0 fw-medium">{perfil?.nome_empresa || 'N/A'}</p>
                                             </div>
                                             <div className="mb-3">
-                                                <span className="text-muted small">Email</span>
+                                                <span className="text-muted small">Email Institucional</span>
                                                 <p className="mb-0 fw-medium">{userData?.email_institucional || 'N/A'}</p>
                                             </div>
                                             <div className="mb-3">
-                                                <span className="text-muted small">Palavra-Passe</span>
-                                                <p className="mb-0 fw-medium">••••••••</p>
+                                                <span className="text-muted small">Website</span>
+                                                <p className="mb-0 fw-medium">
+                                                    {perfil?.website ? (
+                                                        <a href={perfil.website} target="_blank" rel="noopener noreferrer" className="text-primary">
+                                                            {perfil.website}
+                                                        </a>
+                                                    ) : 'N/A'}
+                                                </p>
                                             </div>
                                         </div>
                                         <div className="col-md-6">
                                             <div className="mb-3">
-                                                <span className="text-muted small">NIF</span>
+                                                <span className="text-muted small">NIF/NIPC</span>
                                                 <p className="mb-0 fw-medium">{perfil?.nif || 'N/A'}</p>
                                             </div>
-                                        </div>
-                                    </div>
-
-                                    {/* Localização e Contacto */}
-                                    <div className="row mb-4">
-                                        <div className="col-12">
-                                            <h6 className="text-muted mb-3 pb-2 border-bottom">Localização e Contacto</h6>
-                                        </div>
-                                    </div>
-
-                                    <div className="row mb-4">
-                                        <div className="col-md-6">
                                             <div className="mb-3">
-                                                <span className="text-muted small">Área</span>
-                                                <p className="mb-0 fw-medium">{perfil?.website || 'N/A'}</p>
+                                                <span className="text-muted small">Telefone de Contacto</span>
+                                                <p className="mb-0 fw-medium">
+                                                    {perfil?.telefone_contacto ? (
+                                                        <a href={`tel:${perfil.telefone_contacto}`} className="text-primary">
+                                                            {perfil.telefone_contacto}
+                                                        </a>
+                                                    ) : 'N/A'}
+                                                </p>
                                             </div>
                                         </div>
-                                        <div className="col-md-6">
+                                    </div>
+
+                                    {/* Localização */}
+                                    <div className="row mb-4">
+                                        <div className="col-12">
+                                            <h6 className="text-muted mb-3 pb-2 border-bottom">Localização</h6>
+                                        </div>
+                                    </div>
+
+                                    <div className="row mb-4">
+                                        <div className="col-12">
                                             <div className="mb-3">
-                                                <span className="text-muted small">Localização</span>
+                                                <span className="text-muted small">Morada</span>
                                                 <p className="mb-0 fw-medium">{perfil?.morada || 'N/A'}</p>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <div className="row mb-4">
-                                        <div className="col-12">
-                                            <div className="mb-3">
-                                                <span className="text-muted small">Contacto</span>
-                                                <p className="mb-0 fw-medium">{perfil?.telefone_contacto || 'N/A'}</p>
                                             </div>
                                         </div>
                                     </div>

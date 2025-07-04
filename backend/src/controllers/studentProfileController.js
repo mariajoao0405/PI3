@@ -120,9 +120,11 @@ exports.getStudentProposals = async (req, res) => {
       include: [
         {
           model: Proposal,
+          as:'proposal',
           include: [
             {
               model: CompanyProfile,
+              as:'company_profile',
               attributes: ['id', 'nome_empresa', 'website', 'telefone_contacto']
             }
           ]

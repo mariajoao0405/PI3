@@ -6,41 +6,53 @@ const Proposal = require('./proposal');
 const ProposalMatch = require('./proposalMatch');
 const Notification = require('./notification');
 
-// User profiles
-User.hasOne(StudentProfile, { foreignKey: 'user_id' });
-StudentProfile.belongsTo(User, { foreignKey: 'user_id' });
+// =====================
+// USER PROFILES
+// =====================
+User.hasOne(StudentProfile, { foreignKey: 'user_id', as: 'student_profile' });
+StudentProfile.belongsTo(User, { foreignKey: 'user_id', as: 'user' });
 
-User.hasOne(CompanyProfile, { foreignKey: 'user_id' });
-CompanyProfile.belongsTo(User, { foreignKey: 'user_id' });
+User.hasOne(CompanyProfile, { foreignKey: 'user_id', as: 'company_profile' });
+CompanyProfile.belongsTo(User, { foreignKey: 'user_id', as: 'user' });
 
-User.hasOne(DepartmentManagerProfile, { foreignKey: 'user_id' });
-DepartmentManagerProfile.belongsTo(User, { foreignKey: 'user_id' });
+User.hasOne(DepartmentManagerProfile, { foreignKey: 'user_id', as: 'department_profile' });
+DepartmentManagerProfile.belongsTo(User, { foreignKey: 'user_id', as: 'user' });
 
-// Proposal associations - ONLY ONE SET
+// =====================
+// PROPOSAL ASSOCIATIONS
+// =====================
+
+// User como criador da proposta
 User.hasMany(Proposal, { foreignKey: 'user_id', as: 'propostas_criadas' });
 Proposal.belongsTo(User, { foreignKey: 'user_id', as: 'criador' });
 
+// User como validador da proposta
 User.hasMany(Proposal, { foreignKey: 'validada_por_id', as: 'propostas_validadas' });
 Proposal.belongsTo(User, { foreignKey: 'validada_por_id', as: 'validador' });
 
-// Notifications
-User.hasMany(Notification, { foreignKey: 'user_id' });
-Notification.belongsTo(User, { foreignKey: 'user_id' });
+// Company-Proposal association
+CompanyProfile.hasMany(Proposal, { foreignKey: 'empresa_id', as: 'propostas' });
+Proposal.belongsTo(CompanyProfile, { foreignKey: 'empresa_id', as: 'company_profile' });
 
-// Company-Proposal
-CompanyProfile.hasMany(Proposal, { foreignKey: 'empresa_id' });
-Proposal.belongsTo(CompanyProfile, { foreignKey: 'empresa_id' });
+// CORRIGIDO: Department-Proposal association
+// Remover esta associação problemática - não há campo department_id na tabela proposals
+// DepartmentManagerProfile.hasMany(Proposal, { foreignKey: 'id', as: 'propostas_departamento' });
+// Proposal.belongsTo(DepartmentManagerProfile, { foreignKey: 'id', as: 'departamento' });
 
-DepartmentManagerProfile.hasMany(Proposal, { foreignKey: 'id', as: 'propostas_departamento' });
-Proposal.belongsTo(DepartmentManagerProfile, { foreignKey: 'id', as: 'departamento' });
+// =====================
+// PROPOSAL MATCHES
+// =====================
+Proposal.hasMany(ProposalMatch, { foreignKey: 'proposal_id', as: 'matches' });
+ProposalMatch.belongsTo(Proposal, { foreignKey: 'proposal_id', as: 'proposal' });
 
-// Proposal matches
-Proposal.hasMany(ProposalMatch, { foreignKey: 'proposal_id' });
-ProposalMatch.belongsTo(Proposal, { foreignKey: 'proposal_id' });
+StudentProfile.hasMany(ProposalMatch, { foreignKey: 'student_id', as: 'matches' });
+ProposalMatch.belongsTo(StudentProfile, { foreignKey: 'student_id', as: 'student_profile' });
 
-StudentProfile.hasMany(ProposalMatch, { foreignKey: 'student_id' });
-ProposalMatch.belongsTo(StudentProfile, { foreignKey: 'student_id' });
+// =====================
+// NOTIFICATIONS
+// =====================
+User.hasMany(Notification, { foreignKey: 'user_id', as: 'notifications' });
+Notification.belongsTo(User, { foreignKey: 'user_id', as: 'user' });
 
-// Proposal notifications
-Proposal.hasMany(Notification, { foreignKey: 'proposal_id' });
-Notification.belongsTo(Proposal, { foreignKey: 'proposal_id' });
+Proposal.hasMany(Notification, { foreignKey: 'proposal_id', as: 'notifications' });
+Notification.belongsTo(Proposal, { foreignKey: 'proposal_id', as: 'proposal' });

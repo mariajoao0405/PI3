@@ -91,7 +91,8 @@ const Sidebar = () => {
         },
         {
           label:'Ver todas as Propostas',
-          path:'/empresa/todas-propostas'
+          path:'/empresa/todas-propostas',
+          icon: 'bi-file-earmark-text'
         }
       ],
       gestor: [

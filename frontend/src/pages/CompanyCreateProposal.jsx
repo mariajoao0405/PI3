@@ -171,7 +171,7 @@ const CompanyCreateProposal = () => {
                             <input type="email" className="form-control" name="contacto_email" value={form.contacto_email} onChange={handleChange} />
                         </div>
 
-                        <button type="submit" className="btn btn-dark px-4">Criar Proposta</button>
+                        <button type="submit" className="btn btn-dark mb-4">Criar Proposta</button>
                     </form>
                 )}
             </div>
