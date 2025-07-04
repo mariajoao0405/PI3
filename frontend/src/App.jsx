@@ -31,6 +31,7 @@ import DepartmentDashboard from './pages/DepartmentGestor.jsx'
 import DepartmentCreateProposals from './pages/DepartmentCreateProposal.jsx'
 import DepartmentViewProposals from './pages/DepartmentViewProposals.jsx'
 import DepartmentEditProposal from './pages/DepartmentEditProposal.jsx'
+import DepartmentViewStudents from './pages/DepartmentViewStudents.jsx'
 
 
 function App() {
@@ -66,6 +67,7 @@ function App() {
       <Route path="/gestor/criar-proposta" element={<ProtectedRoute element={<DepartmentCreateProposals/>} allowedRoles={['gestor']} />} />
       <Route path="/gestor/ver-propostas" element={<ProtectedRoute element={<DepartmentViewProposals/>} allowedRoles={['gestor']} />} />
       <Route path="/gestor/editar-proposta/:proposal_id" element={<ProtectedRoute element={<DepartmentEditProposal/>} allowedRoles={['gestor']} />} />
+      <Route path="/gestor/estudantes" element={<ProtectedRoute element={<DepartmentViewStudents/>} allowedRoles={['gestor']} />} />
 
     </Routes>
   )

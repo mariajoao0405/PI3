@@ -14,4 +14,14 @@ router.delete('/students/:id', StudentProfileController.deleteStudent);
 // ADICIONAR ESTAS ROTAS:
 router.get('/my-proposals', authenticateToken, StudentProfileController.getStudentProposals);
 
+
+//pedido de remoção
+
+router.post('/request-deletion', authenticateToken, StudentProfileController.requestAccountDeletion);
+
+
+router.get('/deletion-requests', authenticateToken, StudentProfileController.listDeletionRequests);
+
+router.delete('/deletion-requests/:id/approve', authenticateToken, StudentProfileController.approveDeletion);
+
 module.exports = router;
