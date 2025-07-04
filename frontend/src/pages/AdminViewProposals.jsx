@@ -120,7 +120,7 @@ const AdminViewProposals = () => {
                 headers: { Authorization: `Bearer ${token}` }
             });
 
-            setPropostas(prev => prev.map(p => 
+            setPropostas(prev => prev.map(p =>
                 p.id === proposalId ? { ...p, estado: 'ativa' } : p
             ));
         } catch (err) {
@@ -138,7 +138,7 @@ const AdminViewProposals = () => {
                 headers: { Authorization: `Bearer ${token}` }
             });
 
-            setPropostas(prev => prev.map(p => 
+            setPropostas(prev => prev.map(p =>
                 p.id === proposalId ? { ...p, estado: 'rejeitada' } : p
             ));
         } catch (err) {
@@ -157,7 +157,7 @@ const AdminViewProposals = () => {
                 headers: { Authorization: `Bearer ${token}` }
             });
 
-            setPropostas(prev => prev.map(p => 
+            setPropostas(prev => prev.map(p =>
                 p.id === proposalId ? { ...p, estado: 'inativa' } : p
             ));
         } catch (err) {
@@ -176,7 +176,7 @@ const AdminViewProposals = () => {
                 headers: { Authorization: `Bearer ${token}` }
             });
 
-            setPropostas(prev => prev.map(p => 
+            setPropostas(prev => prev.map(p =>
                 p.id === proposalId ? { ...p, estado: 'ativa' } : p
             ));
         } catch (err) {
@@ -306,17 +306,19 @@ const AdminViewProposals = () => {
                                             <div className="col-md-6">
                                                 <h6 className="text-muted">Informações da Empresa</h6>
                                                 <p><strong>Empresa:</strong> {proposta.company_profile?.nome_empresa || 'N/A'}</p>
+
                                                 <h6 className="text-muted">Informações do Criador</h6>
                                                 <p><strong>Criado por:</strong> {proposta.criador?.nome || 'N/A'}</p>
+
+                                                {/* Acesso correto ao departamento */}
+                                                {proposta.criador?.department_profile?.departamento ? (
+                                                    <p><strong>Departamento:</strong> {proposta.criador.department_profile.departamento}</p>
+                                                ) : (
+                                                    <p><strong>Tipo de Criador:</strong> {proposta.criador?.tipo_utilizador || 'N/A'}</p>
+                                                )}
+
                                                 <p><strong>Email:</strong> {proposta.criador?.email_institucional || 'N/A'}</p>
                                                 <p><strong>Tipo:</strong> {proposta.tipo_proposta}</p>
-                                            </div>
-                                            <div className="col-md-6">
-                                                <h6 className="text-muted">Detalhes da Vaga</h6>
-                                                <p><strong>Local:</strong> {proposta.local_trabalho}</p>
-                                                <p><strong>Contrato:</strong> {proposta.tipo_contrato}</p>
-                                                <p><strong>Submissão:</strong> {formatDate(proposta.data_submissao)}</p>
-                                                <p><strong>Prazo:</strong> {formatDate(proposta.prazo_candidatura)}</p>
                                             </div>
                                         </div>
 
@@ -368,14 +370,13 @@ const AdminViewProposals = () => {
                                                             )}
                                                         </span>
                                                         <div className="d-flex flex-column align-items-end">
-                                                            <span className={`badge ${
-                                                                assignment.estado === 'pendente' ? 'bg-warning text-dark' :
+                                                            <span className={`badge ${assignment.estado === 'pendente' ? 'bg-warning text-dark' :
                                                                 assignment.estado === 'aceite' ? 'bg-success' :
-                                                                'bg-danger'
-                                                            }`}>
+                                                                    'bg-danger'
+                                                                }`}>
                                                                 {assignment.estado}
                                                             </span>
-                                                           
+
                                                         </div>
                                                     </div>
                                                 ))}
