@@ -97,7 +97,7 @@ const PaginaListarEstudantes = () => {
           </div>
           <div>
             <button
-              className="btn btn-warning me-2"
+              className="btn btn-success"
               onClick={handleOpenModal}
             >
               <i className="bi bi-exclamation-triangle"></i> Pedidos de Remoção
@@ -110,7 +110,7 @@ const PaginaListarEstudantes = () => {
         {/* Tabela de Estudantes */}
         {estudantes.length > 0 ? (
           <div className="table-responsive">
-            <table className="table table-bordered table-striped mt-4">
+            <table className="table table-dark table-striped table-bordered">
               <thead className="table-dark">
                 <tr>
                   <th>ID</th>
@@ -152,7 +152,7 @@ const PaginaListarEstudantes = () => {
                     </td>
                     <td>
                       {est.cv_url ? (
-                        <a href={est.cv_url} target="_blank" rel="noreferrer" className="btn btn-sm btn-outline-primary">
+                        <a href={est.cv_url} target="_blank" rel="noreferrer" className="btn btn-sm btn-outline-light">
                           <i className="bi bi-file-earmark-pdf"></i> Ver CV
                         </a>
                       ) : (

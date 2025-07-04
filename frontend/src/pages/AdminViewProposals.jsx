@@ -237,14 +237,6 @@ const AdminViewProposals = () => {
                             {propostas.length} proposta(s) encontrada(s)
                         </p>
                     </div>
-                    <div>
-                        <button
-                            className="btn btn-primary me-2"
-                            onClick={() => navigate('/admin/criar-proposta')}
-                        >
-                            <i className="bi bi-plus"></i> Nova Proposta
-                        </button>
-                    </div>
                 </div>
 
                 {error && (
@@ -291,7 +283,7 @@ const AdminViewProposals = () => {
                         <h5>Nenhuma Proposta Encontrada</h5>
                         <p>Não há propostas para mostrar com os filtros aplicados.</p>
                         <button
-                            className="btn btn-primary"
+                            className="btn btn-success"
                             onClick={() => navigate('/admin/criar-proposta')}
                         >
                             Criar Primeira Proposta

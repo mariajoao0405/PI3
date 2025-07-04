@@ -107,7 +107,7 @@ const PaginaDepartamentos = () => {
       <div className="container mt-5">
         <h2>Departamentos</h2>
 
-        <button className="btn btn-primary my-3" onClick={() => {
+        <button className="btn btn-success mb-3" onClick={() => {
           setShowModal(true);
           setModoEdicao(false);
           setEditId(null);
@@ -170,7 +170,7 @@ const PaginaDepartamentos = () => {
         )}
 
         {departamentos.length > 0 ? (
-          <table className="table table-bordered table-striped mt-4">
+          <table className="table table-dark table-striped table-bordered">
             <thead>
               <tr>
                 <th>ID</th>

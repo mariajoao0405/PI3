@@ -58,7 +58,7 @@ exports.deleteStudent = async (req, res) => {
         as: 'user'
       }]
     });
-    
+
     if (!student) {
       return res.status(404).json({ success: false, error: 'Perfil não encontrado.' });
     }
@@ -83,7 +83,14 @@ exports.deleteStudent = async (req, res) => {
 
 exports.getStudentByUserId = async (req, res) => {
   try {
-    const student = await StudentProfile.findOne({ where: { user_id: req.params.user_id } });
+    const student = await StudentProfile.findOne({
+      where: { user_id: req.params.user_id },
+      include: [{
+        model: User,
+        as: 'user',
+        attributes: ['id', 'nome', 'email_institucional']
+      }]
+    });
     if (student) return res.json({ success: true, data: student });
     return res.status(404).json({ success: false, error: 'Perfil não encontrado.' });
   } catch (error) {
@@ -91,20 +98,19 @@ exports.getStudentByUserId = async (req, res) => {
   }
 };
 
-
 exports.getStudentProposals = async (req, res) => {
   try {
     const userId = req.user.id;
 
     // Buscar perfil do estudante
-    const studentProfile = await StudentProfile.findOne({ 
-      where: { user_id: userId } 
+    const studentProfile = await StudentProfile.findOne({
+      where: { user_id: userId }
     });
-    
+
     if (!studentProfile) {
-      return res.status(404).json({ 
-        success: false, 
-        error: 'Perfil do estudante não encontrado.' 
+      return res.status(404).json({
+        success: false,
+        error: 'Perfil do estudante não encontrado.'
       });
     }
 
@@ -124,16 +130,16 @@ exports.getStudentProposals = async (req, res) => {
       ],
     });
 
-    return res.status(200).json({ 
-      success: true, 
-      data: proposalMatches 
+    return res.status(200).json({
+      success: true,
+      data: proposalMatches
     });
 
   } catch (error) {
     console.error('Erro ao buscar propostas do estudante:', error);
-    return res.status(500).json({ 
-      success: false, 
-      error: 'Erro ao buscar propostas.' 
+    return res.status(500).json({
+      success: false,
+      error: 'Erro ao buscar propostas.'
     });
   }
 };
@@ -144,14 +150,14 @@ exports.requestAccountDeletion = async (req, res) => {
     const userId = req.user.id;
 
     // Buscar perfil do estudante
-    const studentProfile = await StudentProfile.findOne({ 
+    const studentProfile = await StudentProfile.findOne({
       where: { user_id: userId }
     });
-    
+
     if (!studentProfile) {
-      return res.status(404).json({ 
-        success: false, 
-        error: 'Perfil do estudante não encontrado.' 
+      return res.status(404).json({
+        success: false,
+        error: 'Perfil do estudante não encontrado.'
       });
     }
 

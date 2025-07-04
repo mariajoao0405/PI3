@@ -39,6 +39,8 @@ const PaginaPerfilEstudante = () => {
         // Preencher form com dados existentes para edição
         if (res.data.data) {
           setForm({
+            nome: res.data.data.nome || '',
+            email: res.data.data.email_institucional || '',
             curso: res.data.data.curso || '',
             ano: res.data.data.ano || '',
             idade: res.data.data.idade || '',
@@ -136,12 +138,18 @@ const PaginaPerfilEstudante = () => {
     }
   };
 
+  const getInitials = (name) => {
+    if (!name) return 'EU';
+    return name.split(' ').map(n => n[0]).join('').toUpperCase().substring(0, 2);
+  };
+
   const renderField = (label, name, type = 'text', textarea = false) => (
-    <div className="mb-3">
-      <label className="form-label fw-semibold">{label}</label>
+    <div className="mb-4">
+      <label className="form-label fw-medium" style={{ color: '#666' }}>{label}</label>
       {textarea ? (
         <textarea
-          className="form-control bg-light border-0 rounded shadow-sm"
+          className="form-control border-0 rounded-3"
+          style={{ backgroundColor: '#f8f9fa', padding: '12px 16px', minHeight: '100px' }}
           name={name}
           value={form[name]}
           onChange={handleChange}
@@ -149,7 +157,8 @@ const PaginaPerfilEstudante = () => {
       ) : (
         <input
           type={type}
-          className="form-control bg-light border-0 rounded shadow-sm"
+          className="form-control border-0 rounded-3"
+          style={{ backgroundColor: '#f8f9fa', padding: '12px 16px' }}
           name={name}
           value={form[name]}
           onChange={handleChange}
@@ -158,19 +167,41 @@ const PaginaPerfilEstudante = () => {
     </div>
   );
 
-  if (loading) return <p>A carregar...</p>;
+  if (loading) {
+    return (
+      <div className="d-flex">
+        <Sidebar />
+        <div className="flex-grow-1 d-flex align-items-center justify-content-center" style={{ minHeight: '100vh' }}>
+          <div className="text-center">
+            <div className="spinner-border text-primary" role="status">
+              <span className="visually-hidden">A carregar...</span>
+            </div>
+            <p className="mt-2">A carregar perfil...</p>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="d-flex">
-     <Sidebar />
-      <div className="container py-4">
-        <div className="bg-white rounded-4 shadow p-4">
-          <div className="d-flex align-items-center justify-content-between mb-4">
+      <Sidebar />
+      <div className="flex-grow-1" style={{ backgroundColor: '#f8f9fa', minHeight: '100vh' }}>
+        <div className="container-fluid p-4">
+          {/* Header com perfil do usuário */}
+          <div className="d-flex justify-content-between align-items-center mb-4 bg-white rounded-3 p-4 shadow-sm">
             <div className="d-flex align-items-center">
-              <div className="rounded-circle bg-secondary me-3" style={{ width: 80, height: 80 }}></div>
+              <div 
+                className="rounded-circle bg-primary text-white d-flex align-items-center justify-content-center me-3"
+                style={{ width: '60px', height: '60px', fontSize: '20px', fontWeight: 'bold' }}
+              >
+                {getInitials(perfil?.user?.nome)}
+              </div>
               <div>
-                <h4 className="mb-0">{perfil ? perfil.user?.nome : 'Perfil'}</h4>
-                <small className="text-muted">Aluno</small>
+                <h4 className="mb-0" style={{ color: '#2c3e50' }}>
+                  {perfil?.user?.nome || 'Perfil do Estudante'}
+                </h4>
+                <p className="text-muted mb-0">Aluno</p>
               </div>
             </div>
             
@@ -178,90 +209,206 @@ const PaginaPerfilEstudante = () => {
             {!novoPerfil && !editMode && (
               <div className="d-flex gap-2">
                 <button 
-                  className="btn btn-primary btn-sm"
+                  className="btn btn-outline-primary"
                   onClick={handleEditToggle}
+                  style={{ borderRadius: '25px', padding: '8px 20px' }}
                 >
                   <i className="bi bi-pencil"></i> Editar Perfil
                 </button>
                 <button 
-                  className="btn btn-outline-danger btn-sm"
+                  className="btn btn-outline-danger"
                   onClick={handleRequestDeletion}
+                  style={{ borderRadius: '25px', padding: '8px 20px' }}
                 >
-                  <i className="bi bi-trash"></i> Solicitar Remoção
+                  Pedir remoção de conta
                 </button>
               </div>
             )}
           </div>
 
-          <h5 className="bg-dark text-white rounded px-3 py-2">Perfil</h5>
+          {/* Card principal do perfil */}
+          <div className="bg-white rounded-3 shadow-sm">
+            {/* Header do card */}
+            <div 
+              className="px-4 py-3 text-white rounded-top"
+              style={{ backgroundColor: '#2d5a3d' }}
+            >
+              <h5 className="mb-0">Perfil</h5>
+            </div>
 
-          {error && <div className="alert alert-danger mt-3">{error}</div>}
+            {/* Conteúdo do card */}
+            <div className="p-4">
+              {error && <div className="alert alert-danger">{error}</div>}
 
-          {novoPerfil || editMode ? (
-            <form onSubmit={handleSubmit} className="mt-4">
-              <div className="row">
-                <div className="col-md-4">
-                  {renderField('Curso', 'curso')}
-                </div>
-                <div className="col-md-4">
-                  {renderField('Ano', 'ano')}
-                </div>
-                <div className="col-md-4">
-                  {renderField('Idade', 'idade', 'number')}
-                </div>
-              </div>
-              {renderField('Áreas de interesse Profissional', 'areas_interesse', 'text', true)}
-              {renderField('Competências técnicas', 'competencias_tecnicas', 'text', true)}
-              {renderField('Soft Skills', 'soft_skills', 'text', true)}
-              {renderField('Link do CV', 'cv_url')}
+              {novoPerfil || editMode ? (
+                /* Formulário de edição */
+                <form onSubmit={handleSubmit}>
+                  {/* Informações básicas */}
+                  <div className="row mb-4">
+                    <div className="col-12">
+                      <h6 className="text-muted mb-3 pb-2 border-bottom">Informações Básicas</h6>
+                    </div>
+                  </div>
 
-              <div className="d-flex justify-content-end gap-3 mt-3">
-                <button type="submit" className="btn btn-dark px-4">
-                  {novoPerfil ? 'Guardar' : 'Atualizar'}
-                </button>
-                <button 
-                  type="button" 
-                  className="btn btn-outline-secondary px-4" 
-                  onClick={() => {
-                    if (novoPerfil) {
-                      navigate('/estudante');
-                    } else {
-                      setEditMode(false);
-                    }
-                  }}
-                >
-                  Cancelar
-                </button>
-              </div>
-            </form>
-          ) : (
-            <div className="mt-4">
-              <div className="row">
-                <div className="col-md-6">
-                  <p><strong>Curso:</strong> {perfil.curso || 'N/A'}</p>
-                  <p><strong>Ano:</strong> {perfil.ano || 'N/A'}</p>
-                  <p><strong>Idade:</strong> {perfil.idade || 'N/A'}</p>
-                </div>
-                <div className="col-md-6">
-                  <p><strong>Áreas de Interesse:</strong> {perfil.areas_interesse || 'N/A'}</p>
-                  <p><strong>Competências Técnicas:</strong> {perfil.competencias_tecnicas || 'N/A'}</p>
-                  <p><strong>Soft Skills:</strong> {perfil.soft_skills || 'N/A'}</p>
-                </div>
-              </div>
-              {perfil.cv_url && (
-                <p><strong>CV:</strong> <a href={perfil.cv_url} target="_blank" rel="noreferrer" className="text-decoration-none">Ver CV</a></p>
-              )}
-              
-              {/* Mostrar se já solicitou remoção */}
-              {perfil.remocao_solicitada && (
-                <div className="alert alert-warning mt-3">
-                  <i className="bi bi-exclamation-triangle"></i> 
-                  <strong> Pedido de Remoção Pendente:</strong> Você já solicitou a remoção desta conta. 
-                  O pedido está sendo analisado pelos administradores.
+                  <div className="row">
+                    <div className="col-md-4">
+                      {renderField('Curso', 'curso')}
+                    </div>
+                    <div className="col-md-4">
+                      {renderField('Ano', 'ano')}
+                    </div>
+                    <div className="col-md-4">
+                      {renderField('Idade', 'idade', 'number')}
+                    </div>
+                  </div>
+
+                  {/* Competências */}
+                  <div className="row mb-4">
+                    <div className="col-12">
+                      <h6 className="text-muted mb-3 pb-2 border-bottom">Competências e Interesses</h6>
+                    </div>
+                  </div>
+
+                  {renderField('Áreas de Interesse Profissional', 'areas_interesse', 'text', true)}
+                  {renderField('Competências Técnicas', 'competencias_tecnicas', 'text', true)}
+                  {renderField('Soft Skills', 'soft_skills', 'text', true)}
+
+                  {/* Outros */}
+                  <div className="row mb-4">
+                    <div className="col-12">
+                      <h6 className="text-muted mb-3 pb-2 border-bottom">Outros</h6>
+                    </div>
+                  </div>
+
+                  {renderField('Link do CV', 'cv_url')}
+
+                  {/* Botões */}
+                  <div className="d-flex justify-content-end gap-3 mt-4">
+                    <button 
+                      type="submit" 
+                      className="btn text-white"
+                      style={{ 
+                        backgroundColor: '#2d5a3d',
+                        borderRadius: '25px', 
+                        padding: '10px 30px',
+                        border: 'none'
+                      }}
+                    >
+                      Editar
+                    </button>
+                  </div>
+                </form>
+              ) : (
+                /* Visualização do perfil */
+                <div>
+                  {/* Informações básicas */}
+                  <div className="row mb-4">
+                    <div className="col-12">
+                      <h6 className="text-muted mb-3 pb-2 border-bottom">Informações Básicas</h6>
+                    </div>
+                  </div>
+
+                  <div className="row mb-4">
+                    <div className="col-md-6">
+                      <div className="mb-3">
+                        <span className="text-muted small">Nome Completo</span>
+                        <p className="mb-0 fw-medium">{perfil?.user?.nome || 'N/A'}</p>
+                      </div>
+                      <div className="mb-3">
+                        <span className="text-muted small">Email</span>
+                        <p className="mb-0 fw-medium">{perfil?.user?.email_institucional || 'N/A'}</p>
+                      </div>
+                      <div className="mb-3">
+                        <span className="text-muted small">Palavra-Passe</span>
+                        <p className="mb-0 fw-medium">••••••••</p>
+                      </div>
+                    </div>
+                    <div className="col-md-6">
+                      <div className="mb-3">
+                        <span className="text-muted small">Curso</span>
+                        <p className="mb-0 fw-medium">{perfil?.curso || 'N/A'}</p>
+                      </div>
+                      <div className="mb-3">
+                        <span className="text-muted small">Ano</span>
+                        <p className="mb-0 fw-medium">{perfil?.ano || 'N/A'}</p>
+                      </div>
+                      <div className="mb-3">
+                        <span className="text-muted small">Semestre</span>
+                        <p className="mb-0 fw-medium">{perfil?.idade || 'N/A'}</p>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Competências */}
+                  <div className="row mb-4">
+                    <div className="col-12">
+                      <h6 className="text-muted mb-3 pb-2 border-bottom">Áreas de Interesse Profissional</h6>
+                    </div>
+                  </div>
+
+                  <div className="mb-4">
+                    <p className="mb-0">{perfil?.areas_interesse || 'N/A'}</p>
+                  </div>
+
+                  <div className="row mb-4">
+                    <div className="col-12">
+                      <h6 className="text-muted mb-3 pb-2 border-bottom">Competências técnicas e soft skills</h6>
+                    </div>
+                  </div>
+
+                  <div className="row mb-4">
+                    <div className="col-md-6">
+                      <div className="mb-3">
+                        <span className="text-muted small">Competências Técnicas</span>
+                        <p className="mb-0 fw-medium">{perfil?.competencias_tecnicas || 'N/A'}</p>
+                      </div>
+                    </div>
+                    <div className="col-md-6">
+                      <div className="mb-3">
+                        <span className="text-muted small">Soft Skills</span>
+                        <p className="mb-0 fw-medium">{perfil?.soft_skills || 'N/A'}</p>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="row mb-4">
+                    <div className="col-12">
+                      <h6 className="text-muted mb-3 pb-2 border-bottom">Percurso Profissional</h6>
+                    </div>
+                  </div>
+
+                  <div className="mb-4">
+                    {perfil?.cv_url ? (
+                      <div className="mb-3">
+                        <div>
+                          <a 
+                            href={perfil.cv_url} 
+                            target="_blank" 
+                            rel="noreferrer" 
+                            className="btn btn-outline-primary btn-sm"
+                            style={{ borderRadius: '20px', padding: '5px 15px' }}
+                          >
+                            <i className="bi bi-file-earmark-pdf"></i> Ver CV
+                          </a>
+                        </div>
+                      </div>
+                    ) : (
+                      <p className="text-muted">N/A</p>
+                    )}
+                  </div>
+
+                  {/* Mostrar se já solicitou remoção */}
+                  {perfil?.remocao_solicitada && (
+                    <div className="alert alert-warning">
+                      <i className="bi bi-exclamation-triangle"></i> 
+                      <strong> Pedido de Remoção Pendente:</strong> Você já solicitou a remoção desta conta. 
+                      O pedido está sendo analisado pelos administradores.
+                    </div>
+                  )}
                 </div>
               )}
             </div>
-          )}
+          </div>
         </div>
       </div>
     </div>

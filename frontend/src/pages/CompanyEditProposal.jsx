@@ -142,25 +142,8 @@ const CompanyEditProposal = () => {
         }
     };
 
-    const handleLogout = () => {
-        localStorage.removeItem('authToken');
-        navigate('/login');
-    };
+  
 
-    const getStatusBadge = (estado) => {
-        switch (estado) {
-            case 'pendente':
-                return <span className="badge bg-warning text-dark">Pendente Validação</span>;
-            case 'ativa':
-                return <span className="badge bg-success">Ativa</span>;
-            case 'inativa':
-                return <span className="badge bg-danger">Inativa</span>;
-            case 'rejeitada':
-                return <span className="badge bg-danger">Rejeitada</span>;
-            default:
-                return <span className="badge bg-secondary">Desconhecido</span>;
-        }
-    };
 
     if (loading) {
         return (
@@ -201,29 +184,9 @@ const CompanyEditProposal = () => {
                             </p>
                         )}
                     </div>
-                    <div>
-                        <button 
-                            className="btn btn-outline-secondary me-2" 
-                            onClick={() => navigate('/empresa/ver-propostas')}
-                        >
-                            Voltar às Propostas
-                        </button>
-                        <button className="btn btn-warning" onClick={handleLogout}>
-                            Logout
-                        </button>
-                    </div>
+                   
                 </div>
 
-                {proposta && (
-                    <div className="alert alert-info d-flex justify-content-between align-items-center mb-4">
-                        <div>
-                            <strong>Estado atual:</strong> {getStatusBadge(proposta.estado)}
-                            <span className="ms-3">
-                                <strong>ID:</strong> #{proposta.id}
-                            </span>
-                        </div>
-                    </div>
-                )}
 
                 {success && (
                     <div className="alert alert-success" role="alert">

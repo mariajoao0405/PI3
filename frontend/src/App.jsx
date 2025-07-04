@@ -2,7 +2,10 @@ import React from 'react'
 import {Routes, Route} from 'react-router-dom'
 import Registo from './pages/Registo.jsx'
 import Login from './pages/Login.jsx'
+import PaginaInicial from './pages/PaginaInicial.jsx'
 import ProtectedRoute from './componentes/ProtectedRoute.jsx'
+
+
 
 //PAGINAS DE ADMIN
 import AdminPage from './pages/AdminPage.jsx'
@@ -17,6 +20,7 @@ import AdminEditProposal from './pages/AdminEditProposal.jsx'
 import StudantDashboard from './pages/StudantDashboard.jsx'
 import StudantProfile from './pages/StudantProfile.jsx'
 import StudentProposals from './pages/StudantProposals.jsx'
+import StudentAllProposals from './pages/StudantAllProposals.jsx'
 
 //PAGINAS DE EMPRESA
 import EmpresaDashboard from './pages/CompanyDashBoard.jsx'
@@ -24,6 +28,7 @@ import EmpresaProfile from './pages/CompanyProfile.jsx'
 import EmpresaCreateProposal from './pages/CompanyCreateProposal.jsx'
 import EmpresaViewProposal from './pages/CompanyViewProposal'
 import EmpresaEditProposal from './pages/CompanyEditProposal.jsx'
+import EmpresaViewAllProposals from './pages/CompanyAllProposals.jsx'
 
 
 //PAGINAS DE GESTOR
@@ -40,7 +45,7 @@ function App() {
     <Routes>
       <Route path="/registo" element={<Registo />} />
       <Route path="/login" element={<Login />} />
-      <Route path="/" element={<Login />} />
+      <Route path="/" element={<PaginaInicial />} />
 
       {/* rotas protegidas = ADMIN */}
       <Route path="/admin" element={<ProtectedRoute element={<AdminPage/>} allowedRoles={['administrador']} />} />
@@ -54,6 +59,8 @@ function App() {
       <Route path="/estudante" element={<ProtectedRoute element={<StudantDashboard/>} allowedRoles={['estudante']} />} />
       <Route path="/perfil-estudante/:user_id" element={<ProtectedRoute element={<StudantProfile/>} allowedRoles={['estudante']} />} />
       <Route path="/estudante/propostas" element={<ProtectedRoute element={<StudentProposals/>} allowedRoles={['estudante']} />} />
+      <Route path="/estudante/todas-propostas" element={<ProtectedRoute element={<StudentAllProposals/>} allowedRoles={['estudante']} />} />
+
       
       {/* rotas protegidas = EMPRESA */}
       <Route path="/empresa" element={<ProtectedRoute element={<EmpresaDashboard/>} allowedRoles={['empresa']} />} />
@@ -61,6 +68,7 @@ function App() {
       <Route path="/empresa/criar-proposta" element={<ProtectedRoute element={<EmpresaCreateProposal/>} allowedRoles={['empresa']} />} />
       <Route path ="/empresa/ver-propostas" element={<ProtectedRoute element={<EmpresaViewProposal/>} allowedRoles={['empresa']} />} />
       <Route path="/empresa/editar-proposta/:proposal_id" element={<ProtectedRoute element={<EmpresaEditProposal/>} allowedRoles={['empresa']} />} />
+      <Route path="/empresa/todas-propostas" element={<ProtectedRoute element={<EmpresaViewAllProposals/>} allowedRoles={['empresa']} />} />
 
       {/* rotas protegidas = GESTOR */}
      <Route path="/gestor" element={<ProtectedRoute element={<DepartmentDashboard/>} allowedRoles={['gestor']} />} />

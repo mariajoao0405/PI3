@@ -63,9 +63,14 @@ const Sidebar = () => {
           icon: 'bi-speedometer2' 
         },
         { 
-          label: 'Ver Propostas', 
+          label: 'Ver as minhas propostas', 
           path: '/estudante/propostas', 
           icon: 'bi-file-earmark-text' 
+        },
+        {
+          label:'Ver todas as propostas',
+          path: '/estudante/todas-propostas',
+          icon: 'bi-file-earmark-text'
         }
       ],
       empresa: [
@@ -80,9 +85,13 @@ const Sidebar = () => {
           icon: 'bi-plus-circle' 
         },
         { 
-          label: 'Ver Propostas', 
+          label: 'Ver as minhas Propostas', 
           path: '/empresa/ver-propostas', 
           icon: 'bi-file-earmark-text' 
+        },
+        {
+          label:'Ver todas as Propostas',
+          path:'/empresa/todas-propostas'
         }
       ],
       gestor: [

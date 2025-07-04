@@ -9,6 +9,7 @@ const GestorDashboard = () => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
     const [userId, setUserId] = useState(null);
+    const [userData, setUserData] = useState(null);
     const [departmentProfile, setDepartmentProfile] = useState(null);
     
     // Estados para propostas
@@ -26,9 +27,6 @@ const GestorDashboard = () => {
     // Estados para empresas
     const [empresas, setEmpresas] = useState([]);
     const [assignments, setAssignments] = useState({});
-    
-    // Tab ativo
-    const [activeTab, setActiveTab] = useState('overview');
 
     useEffect(() => {
         // Verificar se é gestor
@@ -52,7 +50,12 @@ const GestorDashboard = () => {
         try {
             const token = localStorage.getItem('authToken');
             
-         
+            // Buscar dados do usuário
+            const userRes = await axios.get(`http://localhost:3000/users/users/${userId}`, {
+                headers: { Authorization: `Bearer ${token}` }
+            });
+            setUserData(userRes.data.data);
+
             // Buscar propostas
             const proposalsRes = await axios.get('http://localhost:3000/proposals/proposals', {
                 headers: { Authorization: `Bearer ${token}` }
@@ -158,6 +161,11 @@ const GestorDashboard = () => {
         return new Date(dateString).toLocaleDateString('pt-PT');
     };
 
+    const getInitials = (name) => {
+        if (!name) return 'GS';
+        return name.split(' ').map(n => n[0]).join('').toUpperCase().substring(0, 2);
+    };
+
     // Estatísticas
     const stats = {
         totalPropostas: propostas.length,
@@ -170,12 +178,15 @@ const GestorDashboard = () => {
 
     if (loading) {
         return (
-            <div className="container mt-5">
-                <div className="text-center">
-                    <div className="spinner-border" role="status">
-                        <span className="visually-hidden">A carregar...</span>
+            <div className="d-flex">
+                <Sidebar />
+                <div className="container mt-5">
+                    <div className="text-center">
+                        <div className="spinner-border" role="status">
+                            <span className="visually-hidden">A carregar...</span>
+                        </div>
+                        <p className="mt-2">A carregar dashboard...</p>
                     </div>
-                    <p className="mt-2">A carregar dashboard...</p>
                 </div>
             </div>
         );
@@ -183,124 +194,72 @@ const GestorDashboard = () => {
 
     return (
         <div className="d-flex">
-         <Sidebar />
-            <div className="container mt-4">
-                {/* Header */}
-                <div className="d-flex justify-content-between align-items-center mb-4">
-                    <div>
-                        <h2>Dashboard do Gestor</h2>
-                        {departmentProfile && (
-                            <p className="text-muted mb-0">
-                                <strong>Departamento:</strong> {departmentProfile.departamento}
-                            </p>
-                        )}
+            <Sidebar />
+            <div className="flex-grow-1" style={{ backgroundColor: '#f8f9fa', minHeight: '100vh' }}>
+                <div className="container-fluid p-4">
+                    {/* Header com perfil do usuário */}
+                    <div className="d-flex justify-content-between align-items-center mb-4 bg-white rounded-3 p-4 shadow-sm">
+                        <div className="d-flex align-items-center">
+                            <div 
+                                className="rounded-circle bg-primary text-white d-flex align-items-center justify-content-center me-3"
+                                style={{ width: '50px', height: '50px', fontSize: '18px', fontWeight: 'bold' }}
+                            >
+                                {getInitials(userData?.nome)}
+                            </div>
+                            <div>
+                                <h5 className="mb-0">{userData?.nome || 'Gestor'}</h5>
+                                <small className="text-muted">Gestor</small>
+                            </div>
+                        </div>
                     </div>
+
+                    {/* Cards de navegação */}
+                    <div className="row mb-4">
+                        {/* Card Lista de Propostas */}
+                        <div className="col-md-6 mb-3">
+                            <div className="card h-100 shadow-sm border-0" style={{ backgroundColor: '#e8f5e8' }}>
+                                <div className="card-body p-4">
+                                    <div className="mb-2">
+                                        <small className="text-muted fw-semibold">Propostas</small>
+                                    </div>
+                                    <h4 className="card-title mb-3" style={{ color: '#2d5a3d' }}>
+                                        Lista de Propostas
+                                    </h4>
+                                    <button 
+                                        className="btn btn-outline-success btn-sm"
+                                        onClick={() => navigate('/gestor/ver-propostas')}
+                                    >
+                                        Ver Propostas
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+
+                        {/* Card Estudantes */}
+                        <div className="col-md-6 mb-3">
+                            <div className="card h-100 shadow-sm border-0" style={{ backgroundColor: '#f3e5f5' }}>
+                                <div className="card-body p-4">
+                                    <div className="mb-2">
+                                        <small className="text-muted fw-semibold">Estudantes</small>
+                                    </div>
+                                    <h4 className="card-title mb-3" style={{ color: '#6a1b9a' }}>
+                                        Gestão de Estudantes
+                                    </h4>
+                                    <button 
+                                        className="btn btn-outline-secondary btn-sm"
+                                        onClick={() => navigate('/gestor/estudantes')}
+                                    >
+                                        Ver Estudantes
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    
+                    
                 </div>
-
-                {error && (
-                    <div className="alert alert-danger" role="alert">
-                        {error}
-                    </div>
-                )}
-
-                {/* Cards de Estatísticas */}
-                <div className="row mb-4">
-                    <div className="col-md-4">
-                        <div className="card bg-primary text-white">
-                            <div className="card-body">
-                                <div className="d-flex justify-content-between">
-                                    <div>
-                                        <h5 className="card-title">Propostas Totais</h5>
-                                        <h3 className="mb-0">{stats.totalPropostas}</h3>
-                                    </div>
-                                    <div className="align-self-center">
-                                        <i className="bi bi-file-earmark-text fs-1"></i>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div className="col-md-4">
-                        <div className="card bg-success text-white">
-                            <div className="card-body">
-                                <div className="d-flex justify-content-between">
-                                    <div>
-                                        <h5 className="card-title">Propostas Ativas</h5>
-                                        <h3 className="mb-0">{stats.propostasAtivas}</h3>
-                                    </div>
-                                    <div className="align-self-center">
-                                        <i className="bi bi-check-circle fs-1"></i>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div className="col-md-4">
-                        <div className="card bg-warning text-dark">
-                            <div className="card-body">
-                                <div className="d-flex justify-content-between">
-                                    <div>
-                                        <h5 className="card-title">Pendentes</h5>
-                                        <h3 className="mb-0">{stats.propostasPendentes}</h3>
-                                    </div>
-                                    <div className="align-self-center">
-                                        <i className="bi bi-clock fs-1"></i>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div className="row mb-4">
-                    <div className="col-md-4">
-                        <div className="card bg-info text-white">
-                            <div className="card-body">
-                                <div className="d-flex justify-content-between">
-                                    <div>
-                                        <h5 className="card-title">Estudantes</h5>
-                                        <h3 className="mb-0">{stats.totalEstudantes}</h3>
-                                    </div>
-                                    <div className="align-self-center">
-                                        <i className="bi bi-people fs-1"></i>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div className="col-md-4">
-                        <div className="card bg-secondary text-white">
-                            <div className="card-body">
-                                <div className="d-flex justify-content-between">
-                                    <div>
-                                        <h5 className="card-title">Empresas</h5>
-                                        <h3 className="mb-0">{stats.totalEmpresas}</h3>
-                                    </div>
-                                    <div className="align-self-center">
-                                        <i className="bi bi-building fs-1"></i>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div className="col-md-4">
-                        <div className="card bg-dark text-white">
-                            <div className="card-body">
-                                <div className="d-flex justify-content-between">
-                                    <div>
-                                        <h5 className="card-title">Atribuições</h5>
-                                        <h3 className="mb-0">{stats.totalAtribuicoes}</h3>
-                                    </div>
-                                    <div className="align-self-center">
-                                        <i className="bi bi-link-45deg fs-1"></i>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-               
             </div>
         </div>
     );
