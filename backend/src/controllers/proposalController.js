@@ -1,6 +1,6 @@
 const Proposal = require('../models/proposal');
-const User = require('../models/User');
-const CompanyProfile = require('../models/CompanyProfile');
+const User = require('../models/user');
+const CompanyProfile = require('../models/companyProfile');
 const StudentProfile = require('../models/studentProfile');
 const ProposalMatch = require('../models/proposalMatch'); // ESTA LINHA
 const DepartmentProfile = require('../models/departmentProfile');

@@ -1,8 +1,8 @@
 const StudentProfile = require('../models/studentProfile');
-const User = require('../models/User');
+const User = require('../models/user');
 const ProposalMatch = require('../models/proposalMatch');
 const Proposal = require('../models/proposal');
-const CompanyProfile = require('../models/CompanyProfile');
+const CompanyProfile = require('../models/companyProfile');
 
 exports.listStudents = async (req, res) => {
   try {

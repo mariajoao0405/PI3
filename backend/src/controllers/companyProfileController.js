@@ -1,5 +1,5 @@
-const CompanyProfile = require('../models/CompanyProfile');
-const User = require('../models/User');
+const CompanyProfile = require('../models/companyProfile');
+const User = require('../models/user');
 
 exports.listCompanies = async (req, res) => {
   try {

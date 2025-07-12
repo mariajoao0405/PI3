@@ -1,7 +1,7 @@
 const { DataTypes } = require('sequelize');
 const sequelize = require('./database');
-const CompanyProfile = require('./CompanyProfile');
-const User = require('./User');
+const CompanyProfile = require('./companyProfile');
+const User = require('./user');
 
 const Proposal = sequelize.define('proposals', {
   id: {
