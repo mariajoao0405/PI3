@@ -35,7 +35,7 @@ const DepartmentViewProposals = () => {
     const fetchEmpresas = async () => {
         try {
             const token = localStorage.getItem('authToken');
-            const response = await axios.get('http://localhost:3000/companies/companies', {
+            const response = await axios.get('https://pi3-q1c2.onrender.com/companies/companies', {
                 headers: { Authorization: `Bearer ${token}` }
             });
             setEmpresas(response.data.data || []);
@@ -50,8 +50,8 @@ const DepartmentViewProposals = () => {
         try {
             const token = localStorage.getItem('authToken');
             const url = empresaId
-                ? `http://localhost:3000/proposals/empresa/${empresaId}`
-                : `http://localhost:3000/proposals/proposals`;
+                ? `https://pi3-q1c2.onrender.com/proposals/empresa/${empresaId}`
+                : `https://pi3-q1c2.onrender.com/proposals/proposals`;
 
             const response = await axios.get(url, {
                 headers: { Authorization: `Bearer ${token}` }
@@ -64,7 +64,7 @@ const DepartmentViewProposals = () => {
             const assignmentsData = {};
             for (const proposta of proposalsData) {
                 try {
-                    const assignRes = await axios.get(`http://localhost:3000/proposals/proposals/${proposta.id}/assignments`, {
+                    const assignRes = await axios.get(`https://pi3-q1c2.onrender.com/proposals/proposals/${proposta.id}/assignments`, {
                         headers: { Authorization: `Bearer ${token}` }
                     });
                     assignmentsData[proposta.id] = assignRes.data.data || [];
@@ -112,7 +112,7 @@ const DepartmentViewProposals = () => {
 
         try {
             const token = localStorage.getItem('authToken');
-            await axios.put(`http://localhost:3000/proposals/${proposalId}/validate`, {}, {
+            await axios.put(`https://pi3-q1c2.onrender.com/proposals/${proposalId}/validate`, {}, {
                 headers: { Authorization: `Bearer ${token}` }
             });
 
@@ -130,7 +130,7 @@ const DepartmentViewProposals = () => {
 
         try {
             const token = localStorage.getItem('authToken');
-            await axios.put(`http://localhost:3000/proposals/${proposalId}/reject`, {}, {
+            await axios.put(`https://pi3-q1c2.onrender.com/proposals/${proposalId}/reject`, {}, {
                 headers: { Authorization: `Bearer ${token}` }
             });
 
@@ -149,7 +149,7 @@ const DepartmentViewProposals = () => {
 
         try {
             const token = localStorage.getItem('authToken');
-            await axios.put(`http://localhost:3000/proposals/${proposalId}/inactivate`, {}, {
+            await axios.put(`https://pi3-q1c2.onrender.com/proposals/${proposalId}/inactivate`, {}, {
                 headers: { Authorization: `Bearer ${token}` }
             });
 
@@ -168,7 +168,7 @@ const DepartmentViewProposals = () => {
 
         try {
             const token = localStorage.getItem('authToken');
-            await axios.put(`http://localhost:3000/proposals/${proposalId}/reactivate`, {}, {
+            await axios.put(`https://pi3-q1c2.onrender.com/proposals/${proposalId}/reactivate`, {}, {
                 headers: { Authorization: `Bearer ${token}` }
             });
 
@@ -187,7 +187,7 @@ const DepartmentViewProposals = () => {
 
         try {
             const token = localStorage.getItem('authToken');
-            await axios.delete(`http://localhost:3000/proposals/${proposalId}/remove`, {
+            await axios.delete(`https://pi3-q1c2.onrender.com/proposals/${proposalId}/remove`, {
                 headers: { Authorization: `Bearer ${token}` }
             });
 

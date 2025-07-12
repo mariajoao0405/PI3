@@ -44,7 +44,7 @@ const DepartmentCreateProposal = () => {
         const fetchCompanies = async () => {
             try {
                 const token = localStorage.getItem('authToken');
-                const res = await axios.get('http://localhost:3000/companies/companies', {
+                const res = await axios.get('https://pi3-q1c2.onrender.com/companies/companies', {
                     headers: { Authorization: `Bearer ${token}` }
                 });
                 setCompanies(res.data.data || []);
@@ -67,7 +67,7 @@ const DepartmentCreateProposal = () => {
         try {
             const token = localStorage.getItem('authToken');
 
-            await axios.post('http://localhost:3000/proposals/proposals', {
+            await axios.post('https://pi3-q1c2.onrender.com/proposals/proposals', {
                 ...form,
                 empresa_id: parseInt(form.empresa_id),
                 prazo_candidatura: new Date(form.prazo_candidatura),

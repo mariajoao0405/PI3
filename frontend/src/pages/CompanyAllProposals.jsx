@@ -39,7 +39,7 @@ const CompanyAllProposals = () => {
       const token = localStorage.getItem('authToken');
       
       // Buscar perfil da empresa primeiro
-      const profileRes = await axios.get(`http://localhost:3000/companies/user/${id}`, {
+      const profileRes = await axios.get(`https://pi3-q1c2.onrender.com/companies/user/${id}`, {
         headers: { Authorization: `Bearer ${token}` }
       });
 
@@ -47,7 +47,7 @@ const CompanyAllProposals = () => {
       setCompanyProfile(profile);
 
       // Buscar todas as propostas
-      const response = await axios.get('http://localhost:3000/proposals/proposals', {
+      const response = await axios.get('https://pi3-q1c2.onrender.com/proposals/proposals', {
         headers: { Authorization: `Bearer ${token}` }
       });
       

@@ -31,10 +31,10 @@ const AdminEditProposal = () => {
                 const token = localStorage.getItem('authToken');
 
                 const [proposalRes, empresasRes] = await Promise.all([
-                    axios.get(`http://localhost:3000/proposals/proposals/${proposal_id}`, {
+                    axios.get(`https://pi3-q1c2.onrender.com/proposals/proposals/${proposal_id}`, {
                         headers: { Authorization: `Bearer ${token}` }
                     }),
-                    axios.get('http://localhost:3000/companies/companies', {
+                    axios.get('https://pi3-q1c2.onrender.com/companies/companies', {
                         headers: { Authorization: `Bearer ${token}` }
                     })
                 ]);
@@ -64,7 +64,7 @@ const AdminEditProposal = () => {
         e.preventDefault();
         try {
             const token = localStorage.getItem('authToken');
-            await axios.put(`http://localhost:3000/proposals/proposals/${proposal_id}`, {
+            await axios.put(`https://pi3-q1c2.onrender.com/proposals/proposals/${proposal_id}`, {
                 ...form,
                 empresa_id: parseInt(form.empresa_id),
                 prazo_candidatura: new Date(form.prazo_candidatura)

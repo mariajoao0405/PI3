@@ -31,7 +31,7 @@ const PaginaPerfilEstudante = () => {
     const fetchPerfil = async () => {
       try {
         const token = localStorage.getItem('authToken');
-        const res = await axios.get(`http://localhost:3000/students/user/${user_id}`, {
+        const res = await axios.get(`https://pi3-q1c2.onrender.com/students/user/${user_id}`, {
           headers: { Authorization: `Bearer ${token}` }
         });
         setPerfil(res.data.data);
@@ -77,7 +77,7 @@ const PaginaPerfilEstudante = () => {
       
       if (novoPerfil) {
         // Criar novo perfil
-        await axios.post('http://localhost:3000/students/students', {
+        await axios.post('https://pi3-q1c2.onrender.com/students/students', {
           ...form,
           user_id
         }, {
@@ -86,7 +86,7 @@ const PaginaPerfilEstudante = () => {
         setNovoPerfil(false);
       } else {
         // Atualizar perfil existente
-        await axios.put(`http://localhost:3000/students/students/${perfil.id}`, form, {
+        await axios.put(`https://pi3-q1c2.onrender.com/students/students/${perfil.id}`, form, {
           headers: { Authorization: `Bearer ${token}` }
         });
         setEditMode(false);
@@ -107,7 +107,7 @@ const PaginaPerfilEstudante = () => {
 
     try {
       const token = localStorage.getItem('authToken');
-      await axios.post('http://localhost:3000/students/request-deletion', {}, {
+      await axios.post('https://pi3-q1c2.onrender.com/students/request-deletion', {}, {
         headers: { Authorization: `Bearer ${token}` }
       });
       

@@ -21,7 +21,7 @@ const PaginaListarEstudantes = () => {
 
   const fetchEstudantes = async (token) => {
     try {
-      const res = await axios.get('http://localhost:3000/students/students', {
+      const res = await axios.get('https://pi3-q1c2.onrender.com/students/students', {
         headers: { Authorization: `Bearer ${token}` }
       });
       if (res.data.success) {
@@ -36,7 +36,7 @@ const PaginaListarEstudantes = () => {
   const fetchPedidosRemocao = async () => {
     setLoading(true);
     try {
-      const res = await axios.get('http://localhost:3000/students/deletion-requests', {
+      const res = await axios.get('https://pi3-q1c2.onrender.com/students/deletion-requests', {
         headers: { Authorization: `Bearer ${token}` }
       });
       if (res.data.success) {
@@ -57,7 +57,7 @@ const PaginaListarEstudantes = () => {
 
     try {
       // Simplesmente eliminar o estudante diretamente
-      const res = await axios.delete(`http://localhost:3000/students/students/${estudanteId}`, {
+      const res = await axios.delete(`https://pi3-q1c2.onrender.com/students/students/${estudanteId}`, {
         headers: { Authorization: `Bearer ${token}` }
       });
 

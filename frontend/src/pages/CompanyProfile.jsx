@@ -31,12 +31,12 @@ const CompanyProfile = () => {
                 const token = localStorage.getItem('authToken');
                 
                 // Buscar dados do perfil da empresa
-                const resEmpresa = await axios.get(`http://localhost:3000/companies/user/${user_id}`, {
+                const resEmpresa = await axios.get(`https://pi3-q1c2.onrender.com/companies/user/${user_id}`, {
                     headers: { Authorization: `Bearer ${token}` }
                 });
 
                 // Buscar dados do usuário
-                const resUsuario = await axios.get(`http://localhost:3000/users/users/${user_id}`, {
+                const resUsuario = await axios.get(`https://pi3-q1c2.onrender.com/users/users/${user_id}`, {
                     headers: { Authorization: `Bearer ${token}` }
                 });
 
@@ -90,7 +90,7 @@ const CompanyProfile = () => {
             
             if (!perfil || isPerfilVazio(perfil)) {
                 // Criar novo perfil
-                await axios.post('http://localhost:3000/companies/companies', {
+                await axios.post('https://pi3-q1c2.onrender.com/companies/companies', {
                     ...form,
                     user_id
                 }, {
@@ -98,7 +98,7 @@ const CompanyProfile = () => {
                 });
             } else {
                 // Atualizar perfil existente
-                await axios.put(`http://localhost:3000/companies/companies/${perfil.id}`, form, {
+                await axios.put(`https://pi3-q1c2.onrender.com/companies/companies/${perfil.id}`, form, {
                     headers: { Authorization: `Bearer ${token}` }
                 });
             }

@@ -33,7 +33,7 @@ const PaginaEstudante = () => {
   const fetchUserData = async (id) => {
     try {
       const token = localStorage.getItem('authToken');
-      const response = await axios.get(`http://localhost:3000/users/users/${id}`, {
+      const response = await axios.get(`https://pi3-q1c2.onrender.com/users/users/${id}`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       setUserData(response.data.data);
@@ -45,7 +45,7 @@ const PaginaEstudante = () => {
   const fetchRecentProposals = async () => {
     try {
       const token = localStorage.getItem('authToken');
-      const response = await axios.get('http://localhost:3000/proposals/proposals', {
+      const response = await axios.get('https://pi3-q1c2.onrender.com/proposals/proposals', {
         headers: { Authorization: `Bearer ${token}` }
       });
       

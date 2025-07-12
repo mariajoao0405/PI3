@@ -10,7 +10,7 @@ function Registo() {
     e.preventDefault();
 
     try {
-      const response = await fetch('http://localhost:3000/auth/register', {
+      const response = await fetch('https://pi3-q1c2.onrender.com/auth/register', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({

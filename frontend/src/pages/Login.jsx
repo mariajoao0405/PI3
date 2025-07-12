@@ -39,7 +39,7 @@ const PaginaLogin = () => {
         return;
       }
 
-      const response = await axios.post('http://localhost:3000/auth/login', {
+      const response = await axios.post('https://pi3-q1c2.onrender.com/auth/login', {
         email: formData.email.trim(),
         password: formData.password
       });

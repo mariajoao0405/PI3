@@ -37,7 +37,7 @@ const CompanyCreateProposal = () => {
         const fetchEmpresaId = async () => {
             try {
                 const token = localStorage.getItem('authToken');
-                const res = await axios.get(`http://localhost:3000/companies/user/${id}`, {
+                const res = await axios.get(`https://pi3-q1c2.onrender.com/companies/user/${id}`, {
                     headers: { Authorization: `Bearer ${token}` }
                 });
 
@@ -66,7 +66,7 @@ const CompanyCreateProposal = () => {
         try {
             const token = localStorage.getItem('authToken');
 
-            await axios.post('http://localhost:3000/proposals/proposals', {
+            await axios.post('https://pi3-q1c2.onrender.com/proposals/proposals', {
                 ...form,
                 empresa_id: empresaId,
                 prazo_candidatura: new Date(form.prazo_candidatura),

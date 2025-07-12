@@ -56,7 +56,7 @@ const DepartmentEditProposal = () => {
         try {
             setLoadingEmpresas(true);
             const token = localStorage.getItem('authToken');
-            const response = await axios.get('http://localhost:3000/companies/companies', {
+            const response = await axios.get('https://pi3-q1c2.onrender.com/companies/companies', {
                 headers: { Authorization: `Bearer ${token}` }
             });
             setEmpresas(response.data.data || []);
@@ -73,7 +73,7 @@ const DepartmentEditProposal = () => {
             setLoading(true);
             const token = localStorage.getItem('authToken');
             
-            const response = await axios.get(`http://localhost:3000/proposals/proposals/${proposal_id}`, {
+            const response = await axios.get(`https://pi3-q1c2.onrender.com/proposals/proposals/${proposal_id}`, {
                 headers: { Authorization: `Bearer ${token}` }
             });
 
@@ -171,7 +171,7 @@ const DepartmentEditProposal = () => {
                 empresa_id: formData.empresa_id || null // Enviar null se não houver empresa selecionada
             };
             
-            await axios.put(`http://localhost:3000/proposals/proposals/${proposal_id}`, updateData, {
+            await axios.put(`https://pi3-q1c2.onrender.com/proposals/proposals/${proposal_id}`, updateData, {
                 headers: { Authorization: `Bearer ${token}` }
             });
 

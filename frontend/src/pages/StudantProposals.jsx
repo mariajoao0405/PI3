@@ -28,7 +28,7 @@ const StudantProposals = () => {
         const fetchProposals = async () => {
             try {
                 const token = localStorage.getItem('authToken');
-                const response = await axios.get('http://localhost:3000/students/my-proposals', {
+                const response = await axios.get('https://pi3-q1c2.onrender.com/students/my-proposals', {
                     headers: { Authorization: `Bearer ${token}` }
                 });
 

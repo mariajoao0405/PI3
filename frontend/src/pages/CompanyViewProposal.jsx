@@ -37,7 +37,7 @@ const CompanyViewProposal = () => {
                 const token = localStorage.getItem('authToken');
 
                 // Buscar perfil da empresa
-                const profileRes = await axios.get(`http://localhost:3000/companies/user/${id}`, {
+                const profileRes = await axios.get(`https://pi3-q1c2.onrender.com/companies/user/${id}`, {
                     headers: { Authorization: `Bearer ${token}` }
                 });
 
@@ -46,7 +46,7 @@ const CompanyViewProposal = () => {
 
                 if (profile?.id) {
                     // Buscar propostas da empresa
-                    const proposalsRes = await axios.get(`http://localhost:3000/proposals/empresa/${profile.id}`, {
+                    const proposalsRes = await axios.get(`https://pi3-q1c2.onrender.com/proposals/empresa/${profile.id}`, {
                         headers: { Authorization: `Bearer ${token}` }
                     });
                     const proposalsData = proposalsRes.data.data || [];
@@ -56,7 +56,7 @@ const CompanyViewProposal = () => {
                     const assignmentsData = {};
                     for (const proposta of proposalsData) {
                         try {
-                            const assignRes = await axios.get(`http://localhost:3000/proposals/proposals/${proposta.id}/assignments`, {
+                            const assignRes = await axios.get(`https://pi3-q1c2.onrender.com/proposals/proposals/${proposta.id}/assignments`, {
                                 headers: { Authorization: `Bearer ${token}` }
                             });
                             assignmentsData[proposta.id] = assignRes.data.data || [];
@@ -68,7 +68,7 @@ const CompanyViewProposal = () => {
                 }
 
                 // Buscar estudantes
-                const studentsRes = await axios.get('http://localhost:3000/students/students', {
+                const studentsRes = await axios.get('https://pi3-q1c2.onrender.com/students/students', {
                     headers: { Authorization: `Bearer ${token}` }
                 });
                 setStudents(studentsRes.data.data || []);
@@ -119,7 +119,7 @@ const CompanyViewProposal = () => {
 
         try {
             const token = localStorage.getItem('authToken');
-            await axios.put(`http://localhost:3000/proposals/${proposalId}/inactivate`, {}, {
+            await axios.put(`https://pi3-q1c2.onrender.com/proposals/${proposalId}/inactivate`, {}, {
                 headers: { Authorization: `Bearer ${token}` }
             });
 
@@ -135,7 +135,7 @@ const CompanyViewProposal = () => {
     const handleReactivateProposal = async (proposalId) => {
         try {
             const token = localStorage.getItem('authToken');
-            await axios.put(`http://localhost:3000/proposals/${proposalId}/reactivate`, {}, {
+            await axios.put(`https://pi3-q1c2.onrender.com/proposals/${proposalId}/reactivate`, {}, {
                 headers: { Authorization: `Bearer ${token}` }
             });
 
@@ -168,7 +168,7 @@ const CompanyViewProposal = () => {
 
         try {
             const token = localStorage.getItem('authToken');
-            const response = await axios.post('http://localhost:3000/proposals/assign-to-student', {
+            const response = await axios.post('https://pi3-q1c2.onrender.com/proposals/assign-to-student', {
                 proposal_id: selectedProposal.id,
                 student_id: parseInt(selectedStudent)
             }, {
@@ -179,7 +179,7 @@ const CompanyViewProposal = () => {
             handleCloseAssignModal();
 
             // Recarregar atribuições após atribuir
-            const assignRes = await axios.get(`http://localhost:3000/proposals/proposals/${selectedProposal.id}/assignments`, {
+            const assignRes = await axios.get(`https://pi3-q1c2.onrender.com/proposals/proposals/${selectedProposal.id}/assignments`, {
                 headers: { Authorization: `Bearer ${token}` }
             });
             setAssignments(prev => ({

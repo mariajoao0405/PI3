@@ -22,7 +22,7 @@ const PaginaDepartamentos = () => {
 
   const fetchGestores = async (token) => {
     try {
-      const response = await axios.get('http://localhost:3000/users/users', {
+      const response = await axios.get('https://pi3-q1c2.onrender.com/users/users', {
         headers: { Authorization: `Bearer ${token}` }
       });
       const gestoresFiltrados = (response.data.data || []).filter(
@@ -37,7 +37,7 @@ const PaginaDepartamentos = () => {
 
   const fetchDepartamentos = async (token) => {
     try {
-      const res = await axios.get('http://localhost:3000/managers/managers', {
+      const res = await axios.get('https://pi3-q1c2.onrender.com/managers/managers', {
         headers: { Authorization: `Bearer ${token}` }
       });
       if (res.data.success) setDepartamentos(res.data.data || []);
@@ -54,12 +54,12 @@ const PaginaDepartamentos = () => {
     setMensagem('');
     try {
       if (modoEdicao && editId !== null) {
-        const res = await axios.put(`http://localhost:3000/managers/managers/${editId}`, form, {
+        const res = await axios.put(`https://pi3-q1c2.onrender.com/managers/managers/${editId}`, form, {
           headers: { Authorization: `Bearer ${token}` }
         });
         if (res.data.success) setMensagem('Departamento atualizado com sucesso!');
       } else {
-        const res = await axios.post('http://localhost:3000/managers/managers', form, {
+        const res = await axios.post('https://pi3-q1c2.onrender.com/managers/managers', form, {
           headers: { Authorization: `Bearer ${token}` }
         });
         if (res.data.success) setMensagem(`Departamento "${form.departamento}" criado com sucesso.`);
@@ -88,7 +88,7 @@ const PaginaDepartamentos = () => {
   const handleDelete = async (id) => {
     if (!window.confirm('Tens a certeza que queres eliminar este departamento?')) return;
     try {
-      const res = await axios.delete(`http://localhost:3000/managers/managers/${id}`, {
+      const res = await axios.delete(`https://pi3-q1c2.onrender.com/managers/managers/${id}`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       if (res.data.success) {

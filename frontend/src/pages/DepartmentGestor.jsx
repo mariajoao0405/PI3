@@ -51,27 +51,27 @@ const GestorDashboard = () => {
             const token = localStorage.getItem('authToken');
             
             // Buscar dados do usuário
-            const userRes = await axios.get(`http://localhost:3000/users/users/${userId}`, {
+            const userRes = await axios.get(`https://pi3-q1c2.onrender.com/users/users/${userId}`, {
                 headers: { Authorization: `Bearer ${token}` }
             });
             setUserData(userRes.data.data);
 
             // Buscar propostas
-            const proposalsRes = await axios.get('http://localhost:3000/proposals/proposals', {
+            const proposalsRes = await axios.get('https://pi3-q1c2.onrender.com/proposals/proposals', {
                 headers: { Authorization: `Bearer ${token}` }
             });
             setPropostas(proposalsRes.data.data || []);
             setPropostasFiltered(proposalsRes.data.data || []);
 
             // Buscar estudantes
-            const studentsRes = await axios.get('http://localhost:3000/students/students', {
+            const studentsRes = await axios.get('https://pi3-q1c2.onrender.com/students/students', {
                 headers: { Authorization: `Bearer ${token}` }
             });
             setEstudantes(studentsRes.data.data || []);
             setEstudantesFiltered(studentsRes.data.data || []);
 
             // Buscar empresas
-            const companiesRes = await axios.get('http://localhost:3000/companies/companies', {
+            const companiesRes = await axios.get('https://pi3-q1c2.onrender.com/companies/companies', {
                 headers: { Authorization: `Bearer ${token}` }
             });
             setEmpresas(companiesRes.data.data || []);
@@ -80,7 +80,7 @@ const GestorDashboard = () => {
             const assignmentsData = {};
             for (const proposta of proposalsRes.data.data || []) {
                 try {
-                    const assignRes = await axios.get(`http://localhost:3000/proposals/proposals/${proposta.id}/assignments`, {
+                    const assignRes = await axios.get(`https://pi3-q1c2.onrender.com/proposals/proposals/${proposta.id}/assignments`, {
                         headers: { Authorization: `Bearer ${token}` }
                     });
                     assignmentsData[proposta.id] = assignRes.data.data || [];

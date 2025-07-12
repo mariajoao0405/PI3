@@ -36,7 +36,7 @@ const StudentProposals = () => {
     setError('');
     try {
       const token = localStorage.getItem('authToken');
-      const response = await axios.get('http://localhost:3000/proposals/proposals', {
+      const response = await axios.get('https://pi3-q1c2.onrender.com/proposals/proposals', {
         headers: { Authorization: `Bearer ${token}` }
       });
       
@@ -59,7 +59,7 @@ const StudentProposals = () => {
   const fetchEmpresas = async () => {
     try {
       const token = localStorage.getItem('authToken');
-      const response = await axios.get('http://localhost:3000/companies/companies', {
+      const response = await axios.get('https://pi3-q1c2.onrender.com/companies/companies', {
         headers: { Authorization: `Bearer ${token}` }
       });
       setEmpresas(response.data.data || []);

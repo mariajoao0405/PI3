@@ -37,7 +37,7 @@ const PaginaAdmin = () => {
     try {
       setLoading(true);
       setError('');
-      const response = await axios.get('http://localhost:3000/users/users', {
+      const response = await axios.get('https://pi3-q1c2.onrender.com/users/users', {
         headers: {
           Authorization: `Bearer ${token}`
         }
@@ -82,7 +82,7 @@ const PaginaAdmin = () => {
     e.preventDefault();
     setMensagemForm('');
     try {
-      const res = await axios.post('http://localhost:3000/users/users/role', form);
+      const res = await axios.post('https://pi3-q1c2.onrender.com/users/users/role', form);
       if (res.data.success) {
         setMensagemForm(`Utilizador ${res.data.data.nome} criado com sucesso!`);
         await fetchUsers(localStorage.getItem('authToken'));

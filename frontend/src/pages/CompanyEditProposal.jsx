@@ -47,7 +47,7 @@ const CompanyEditProposal = () => {
                 const token = localStorage.getItem('authToken');
 
                 // Buscar perfil da empresa
-                const profileRes = await axios.get(`http://localhost:3000/companies/user/${id}`, {
+                const profileRes = await axios.get(`https://pi3-q1c2.onrender.com/companies/user/${id}`, {
                     headers: { Authorization: `Bearer ${token}` }
                 });
 
@@ -55,7 +55,7 @@ const CompanyEditProposal = () => {
                 setCompanyProfile(profile);
 
                 // Buscar dados da proposta
-                const proposalRes = await axios.get(`http://localhost:3000/proposals/proposals/${proposal_id}`, {
+                const proposalRes = await axios.get(`https://pi3-q1c2.onrender.com/proposals/proposals/${proposal_id}`, {
                     headers: { Authorization: `Bearer ${token}` }
                 });
 
@@ -120,7 +120,7 @@ const CompanyEditProposal = () => {
                 prazo_candidatura: form.prazo_candidatura ? new Date(form.prazo_candidatura).toISOString() : null
             };
 
-            await axios.put(`http://localhost:3000/proposals/proposals/${proposal_id}`, proposalData, {
+            await axios.put(`https://pi3-q1c2.onrender.com/proposals/proposals/${proposal_id}`, proposalData, {
                 headers: { Authorization: `Bearer ${token}` }
             });
 
