@@ -49,6 +49,19 @@ const Home = () => {
                 >
                   LOGIN
                 </button>
+                <button 
+                  className="btn text-white py-3 fw-semibold"
+                  style={{ 
+                    backgroundColor: '#2d5a3d',
+                    borderRadius: '25px',
+                    fontSize: '1.1rem',
+                    border: 'none',
+                    marginTop: '10px'
+                  }}
+                  onClick={() => navigate('/registo')}
+                >
+                  REGISTO
+                </button>
               </div>              
             </div>
           </div>
